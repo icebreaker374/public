@@ -1,1 +1,15 @@
+9-1-23 - 430PM
 
+AzureADAdminRolesReport.ps1 - Uploaded Azure AD administrative roles audit script.
+
+9-1-23 - 455PM
+
+AzureADAdminRolesReport.ps1 - Corrected Export Path and added field for role name to CSV.
+
+9-1-23 @ 725PM
+
+AzureADAdminRolesReport.ps1 - Built-in checks for the existence of C:\Temp, the install status of the Azure AD PowerShell module, and the import status of the Azure AD PowerShell module.  Also added comments for helpful documentation on the scripts functionality.
+
+9-1-23 @ 730PM
+
+AzureADAdminRolesReport.ps1 - Made some Write-Host and comment adjustments, mostly grammar related.
