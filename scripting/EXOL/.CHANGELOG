@@ -1,1 +1,8 @@
+8-29-23:
 
+The original script audit's the client exchange tenant and dumps 3 complete reports.  One for Read and Manage access on mailboxes, one for Send As access, and one for Send on Behalf
+of access.
+
+8-30-23:
+
+The second revision of the script builds in a check to ensure the file you specifiy in the beginning does't already exist in the working directory.
