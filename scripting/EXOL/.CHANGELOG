@@ -1,8 +1,12 @@
 8-29-23:
 
-The original script audit's the client exchange tenant and dumps 3 complete reports.  One for Read and Manage access on mailboxes, one for Send As access, and one for Send on Behalf
+The original script audit's the client Exchange Environment and dumps 3 complete reports.  One for Read and Manage access on mailboxes, one for Send As access, and one for Send on Behalf
 of access.
 
 8-30-23:
 
 The second revision of the script builds in a check to ensure the file you specifiy in the beginning does't already exist in the working directory.
+
+9-1-23 @ 755PM:
+
+Built-in checks for the install status of the ExchangeOnlineManagement PowerShell module, and the import status of the ExchangeOnlineManagement PowerShell module.  Also added comments for helpful documentation on the scripts functionality.
