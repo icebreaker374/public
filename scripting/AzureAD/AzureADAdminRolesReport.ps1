@@ -1,14 +1,12 @@
 # The following if/else statement checks if C:\Temp already exists, if it doesn't it creates it as a working directory.
 
-if(Test-Path "C:\Temp")
+if(Test-Path "C:\Temp"){
 
-{
 Write-Host "C:\Temp already exists."
 }
 
-else
+else{
 
-{
 cd C:\
 md Temp > $null
 
@@ -28,9 +26,7 @@ Write-Host "
 Confirmed the AzureAD PowerShell Module is loaded."
 }
 
-else
-
-{
+else{
     
 Import-Module AzureAD
 
@@ -40,8 +36,7 @@ The AzureAD PowerShell Module was successfully loaded."
 
 } # This curly bracket closes the if/else statement that checks if the AzureAD module is installed.
 
-else
-{
+else{
 
 Install-Module AzureAD -Scope CurrentUser
 Import-Module AzureAD
