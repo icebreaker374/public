@@ -13,3 +13,7 @@ AzureADAdminRolesReport.ps1 - Built-in checks for the existence of C:\Temp, the 
 9-1-23 @ 730PM
 
 AzureADAdminRolesReport.ps1 - Made some Write-Host and comment adjustments, mostly grammar related.
+
+9-5-23 @ 830AM
+
+AzureADAdminRolesReport.ps1 - Cleaned up a few lines of unnecessary dead space.
