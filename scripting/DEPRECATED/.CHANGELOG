@@ -1,4 +1,4 @@
 9-6-23 @ 1245PM
 
 AzureADAdminRolesReportMSGraph.ps1 - This was a work in progress copy of a script to audit all active Azure AD admin roles assignments in an Azure AD tenant.
-The current (semi)-completed copy can be found here:
+The current (semi)-completed copy can be found here: https://github.com/icebreaker374/public/blob/main/scripting/MSGraph/AzureADAdminRolesReportMSGraphV2.ps1
