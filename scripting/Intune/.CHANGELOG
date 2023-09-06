@@ -1,0 +1,7 @@
+HideSearchAndTaskView Script(TESTED ON WIN10 ONLY):
+
+This script is designed to be uploaded to Intune and it automatically hides the task view button and Windows Search bar as part of the Intune configuration.
+
+Taskbar.xml(TESTED ON WIN10 ONLY):
+
+This is a custom XML file that is designed to be uploaded to Intune and it automatically pins Edge, Chrome, File Explorer, and Outlook to the Taskbar.
