@@ -1,4 +1,7 @@
+9-5-23 @ 305PM
+
+UnlicensedUsersNoBlockedSignInReport.ps1 - Uploaded script to audit unlicensed users who don't have sign-in blocked and cleaned up a few lines of dead space.
+
 9-6-23 @ 1215PM
 
-UnlicensedUsersNoBlockedSignInReport.ps1 - Uploaded script to report on unlicensed users who's accounts do not have sign in blocked.  Built-in C:Temp, module installation,
-module import status checks, and script documentation.
+UnlicensedUsersNoBlockedSignInReport.ps1 - Built-in C:Temp, module installation, module import status checks, and script documentation.
