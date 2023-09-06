@@ -1,5 +1,3 @@
-# This is a test
-
 if(Test-Path "C:\Temp"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
 
     Write-Host "C:\Temp already exists."
