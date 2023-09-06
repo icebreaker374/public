@@ -17,3 +17,7 @@ AzureADAdminRolesReport.ps1 - Made some Write-Host and comment adjustments, most
 9-5-23 @ 830AM
 
 AzureADAdminRolesReport.ps1 - Cleaned up a few lines of unnecessary dead space.
+
+9-6-23 @ 930AM
+
+AzureADAdminRolesReport.ps1 - Improved built-in documentation within the script.
