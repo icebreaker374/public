@@ -1,0 +1,13 @@
+9-3-23 @ 1005PM
+
+AzureADAdminRolesReportMSGraphV2.ps1 - Uploaded Azure AD admin role assignment audit script written for the assocaited Microsoft Graph Modules.  It uses a "Sort" function to clear duplicate lines at the
+moment so it's technically on a bandaid fix until either Graph gets better documentation or I figure something else out on my own.
+
+9-6-23 @ 1000AM
+
+AzureADAdminRolesReportMSGraphV2.ps1 - Built-in a C:\Temp check and module Install/Import checks for the script and added comments to add documentation for how the script works.
+
+9-6-23 @ 1150AM
+
+AzureADAdminRolesReportMSGraphV2.ps1 - Added the -Scopes parameter to the "Connect-MgGraph" line to specify the read-only scopes the user needs to connect to graph with for this
+script to actually function.
