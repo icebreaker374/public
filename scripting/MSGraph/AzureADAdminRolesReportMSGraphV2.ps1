@@ -49,8 +49,8 @@ foreach($module in $RequiredModules){
 
 
 
-Connect-MgGraph -ContextScope Process # The "Process" ContextScope prevents new PS sessions from using previously used credentials to authenticate and run the report, so it prompts for
-                                      # authentication every time.
+Connect-MgGraph -Scopes "User.Read.All", "Directory.Read.All"  -ContextScope Process # The "Process" ContextScope prevents new PS sessions from using previously used credentials to authenticate and run the report, so it prompts for
+                                                                                     # authentication every time.
 
 $DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command gets a list of the AAD admin roles that have ever been assigned and selects the display name and GUID of each
                                                                # admin role.
