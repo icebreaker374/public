@@ -49,5 +49,5 @@ $ReportExportPath = $PWD.ToString() + "\OpenUnlicensedUsersReport.csv" # This co
 
 Write-Host "A list of unlicensed users that DO NOT have sign-in blocked will be generated at" $ReportExportPath.ToString()
 
-Get-MsolUser -All -EnabledFilter EnabledOnly| Where-Object {($_.isLicensed -eq $false) -and ($_.UserPrincipalName -NotMatch "onmicrosoft.com") -and ($_.UserPrincipalName -NotMatch "EXT")} | Select-Object UserPrincipalName | Export-CSV $ReportExportPath
+Get-MsolUser -All -EnabledFilter EnabledOnly| Where-Object {($_.isLicensed -eq $false) -and ($_.UserPrincipalName -NotMatch "onmicrosoft.com") -and ($_.UserPrincipalName -NotMatch "EXT")} | Select-Object UserPrincipalName | Export-CSV $ReportExportPath -NoTypeInformation
 # This command gets a list of all the users that DO NOT have sign in blocked and are unlicensed, where their UPN DOES NOT match that of an external user or the clients .onmicrosoft.com domain, and exports a CSV with the UPN of all the users that meet this criteria.
