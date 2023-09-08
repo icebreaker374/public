@@ -90,17 +90,17 @@ User:" $user.UserPrincipalName "does not exist in:" $client.OrgDisplayName "as a
             Write-Host "
 Disconnecting from Exchange Online for the following tenant:" ($client.OrgDisplayName).ToString()
 
-            Start-Sleep -Seconds 2
-
             Disconnect-ExchangeOnline
+
+            Start-Sleep -Seconds 2
 
             Write-Host "
 Disconnecting from MSOnline for the following tenant:" ($client.OrgDisplayName).ToString()
 
-            Start-Sleep -Seconds 2
-
             [Microsoft.Online.Administration.Automation.ConnectMsolService]::ClearUserSessionState()
            
+            Start-Sleep -Seconds 2
+
         }
 
         else{
