@@ -83,7 +83,7 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
                 Write-Host "
 User:" $user.UserPrincipalName "does not exist in:" $client.OrgDisplayName "as a mail contact."
 
-                $user.DisplayName + ",        " + $user.UserPrincipalName | Out-File $UsersNotContactInOtherTenantsPath -Append
+                $user.DisplayName + ",                " + $user.UserPrincipalName | Out-File $UsersNotContactInOtherTenantsPath -Append
                                 
                 }            
 
