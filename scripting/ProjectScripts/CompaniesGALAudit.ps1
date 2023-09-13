@@ -28,7 +28,7 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
     
     Connect-MsolService
 
-    Get-MsolUser -All | Where-Object {($_.UserPrincipalName -Match $client.PrimaryDomain) -and ($_.UserPrincipalName -NotMatch "#EXT#") -and ($_.isLicensed -EQ $true)} | Select UserPrincipalName | Sort UserPrincipalName | Export-CSV -NoTypeInformation $UserCSVExportPath
+    Get-MsolUser -All | Where-Object {($_.UserPrincipalName -Match $client.PrimaryDomain) -and ($_.UserPrincipalName -NotMatch "#EXT#") -and ($_.isLicensed -EQ $true)} | Select DisplayName, UserPrincipalName | Sort UserPrincipalName | Export-CSV -NoTypeInformation $UserCSVExportPath
     
     Write-Host "
 A CSV with all licensed non-guest/external users in" ($client.OrgDisplayName).ToString() "was generated."
@@ -36,7 +36,7 @@ A CSV with all licensed non-guest/external users in" ($client.OrgDisplayName).To
     Start-Sleep -Seconds 1
     
     Write-Host "
-The report can be found at" ($UserCSVExportPath).ToString()
+The report can be found at:" ($UserCSVExportPath).ToString()
 
     Start-Sleep -Seconds 1
     
@@ -70,6 +70,8 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
             
             $UsersInTenant = Import-CSV -Path $UserCSVExportPath
             
+            $UsersNotContactInOtherTenantsPath = ($currentClient).ToString() + "_Users_NotContactIn_" + ($client.OrgDisplayName).ToString() + ".csv"
+            
             foreach($user in $UsersInTenant){
 
                 if(Get-MailContact -Identity $user.UserPrincipalName -ErrorAction SilentlyContinue){
@@ -77,15 +79,18 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
                 }
 
                 else{
-
-                $UsersNotContactInOtherTenantsPath = ($currentClient).ToString() + "_Users_NotContactIn_" + ($client.OrgDisplayName).ToString() + ".csv"
                 
                 Write-Host "
 User:" $user.UserPrincipalName "does not exist in:" $client.OrgDisplayName "as a mail contact."
+
+                $user.DisplayName + ",                " + $user.UserPrincipalName | Out-File $UsersNotContactInOtherTenantsPath -Append
                                 
                 }            
 
             }
+
+            Write-Host "
+A report of" $currentClient "users not in" $client.OrgDisplayName "as contacts was generated at:" $UsersNotContactInOtherTenantsPath
 
             Write-Host "
 Disconnecting from Exchange Online for the following tenant:" ($client.OrgDisplayName).ToString()
@@ -115,3 +120,5 @@ Users for" ($client.OrgDisplayName).ToString() "will not be checked as mail cont
 # Referenced content:
 
 # Reference URL: https://www.easy365manager.com/how-to-disconnect-from-msolservice/ Referenced content: [Microsoft.Online.Administration.Automation.ConnectMsolService]::ClearUserSessionState()    
+
+# Reference URL: https://superuser.com/questions/1116643/why-does-export-csv-prompt-me-for-an-inputobject Referenced content: $result += $Mailbox.DisplayName + "," + $mailbox.Alias + "," + $mailbox.ServerName + "," + $user.Samaccountname + "," + $user.Surname + "," + $user.Enabled | Out-file $exportto -Append
