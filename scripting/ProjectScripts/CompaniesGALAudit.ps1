@@ -15,7 +15,7 @@ cd C:\Temp\CompaniesGALAudit
 
 $ClientInfo = Import-CSV C:\Temp\CompaniesInfo.csv
 
-foreach($client in $ClientInfo){
+foreach($client in $ClientInfo){ # This curly bracket opens the top level foreach loop that begins the process of verifying if a companys current users exist as contacts in the other companies Exchange environments.  This top level loop simply dumps the list of current users in the current tenant pulled from the CSV into it's own CSV file based on the companys name.
 
     $currentClient = $client.OrgDisplayName
     
@@ -50,9 +50,9 @@ Waiting 2 seconds before continuing..."
 
     Start-Sleep -Seconds 2
     
-    foreach($client in $ClientInfo){
+    foreach($client in $ClientInfo){ # This curly bracket is where the process of checking if the users in the current companys tenant exist in the others as mail contacts.  This process is repeated for all companies in the CSV imported at the beginning of the script.
 
-        if($client.OrgDisplayName -notmatch $currentClient){
+        if($client.OrgDisplayName -notmatch $currentClient){ # This curly bracket opens the if/else statement that prevents you from checking if users exist as contacts in their home tenant.
         
             Write-Host "
 In 3 seconds, you will be prompted to login with Global Administrator credentials to connect to Exchange Online for:" ($client.OrgDisplayName).ToString()
@@ -60,7 +60,7 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
             Start-Sleep -Seconds 3
             
             Connect-ExchangeOnline -ShowBanner:$false
-
+            
             Write-Host "
 In 3 seconds, you will be prompted to login with Global Administrator credentials to connect to MSOnline for:" ($client.OrgDisplayName).ToString()
             
@@ -72,22 +72,22 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
             
             $UsersNotContactInOtherTenantsPath = ($currentClient).ToString() + "_Users_NotContactIn_" + ($client.OrgDisplayName).ToString() + ".csv"
             
-            foreach($user in $UsersInTenant){
+            foreach($user in $UsersInTenant){ # This curly bracket opens the foreach loop that actually checks if each user in the current companys tenant exists in all of the others as a contact.  If not it writes the fact that it doesn't to the PowerShell terminal output and dumps the users display name and email address to a CSV file.
 
-                if(Get-MailContact -Identity $user.UserPrincipalName -ErrorAction SilentlyContinue){
+                if(Get-MailContact -Identity $user.UserPrincipalName -ErrorAction SilentlyContinue){ # This curly bracket opens the if/else statement is what actually checks if the user exists in each of the other tenants as a contact and writes the output to the terminal and to a CSV if it doesn't.
 
                 }
 
                 else{
                 
                 Write-Host "
-User:" $user.UserPrincipalName "does not exist in:" $client.OrgDisplayName "as a mail contact."
+User" $user.UserPrincipalName "does not exist in" $client.OrgDisplayName "as a mail contact."
 
                 $user.DisplayName + ",                " + $user.UserPrincipalName | Out-File $UsersNotContactInOtherTenantsPath -Append
                                 
-                }            
+                } # This curly bracket opens the if/else statement is what actually checks if the user exists in each of the other tenants as a contact.          
 
-            }
+            } # This curly bracket closes the foreach loop that actually checks if each user in the current companys tenant exists in all of the others as a contact.
 
             Write-Host "
 A report of" $currentClient "users not in" $client.OrgDisplayName "as contacts was generated at:" $UsersNotContactInOtherTenantsPath
@@ -106,16 +106,17 @@ Disconnecting from MSOnline for the following tenant:" ($client.OrgDisplayName).
            
             Start-Sleep -Seconds 2
 
-        }
+        } # This curly bracket closes the if/else statement that prevents you from checking if users exist as contacts in their home tenant.
 
         else{
 
             Write-Host "
 Users for" ($client.OrgDisplayName).ToString() "will not be checked as mail contacts in" ($client.OrgDisplayName).ToString()
         }
-    }
+    
+    } # This curly bracket is where the process of checking if the users in the current companys tenant exist in the others as mail contacts.  This process is repeated for all companies in the CSV imported at the beginning of the script.
 
-}
+} # This curly bracket closes the top level foreach loop that begins the process of verifying if a companies current users exist as contacts in the other companies Exchange environments.
 
 # Referenced content:
 
