@@ -8,7 +8,8 @@ else{
     cd C:\
     md Temp > $null
 
-    Write-Host "A directory called 'Temp' was created at 'C:\'"
+    Write-Host "
+A directory called 'Temp' was created at 'C:\'"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
 cd C:\Temp
@@ -16,12 +17,12 @@ cd C:\Temp
 if(Get-InstalledModule AzureAD){ # This curly bracket opens the if/else statement that checks if the AzureAD module is installed.
 
     Write-Host "
-    Confirmed the AzureAD PowerShell module is installed."
+Confirmed the AzureAD PowerShell module is installed."
 
     if(Get-Module AzureAD){ # This curly bracket opens the if/else statement that checks if the AzureAD module is loaded.
 
         Write-Host "
-        Confirmed the AzureAD PowerShell Module is loaded."
+Confirmed the AzureAD PowerShell Module is loaded."
     }
 
     else{
@@ -29,7 +30,7 @@ if(Get-InstalledModule AzureAD){ # This curly bracket opens the if/else statemen
         Import-Module AzureAD
 
         Write-Host "
-        The AzureAD PowerShell Module was successfully loaded."
+The AzureAD PowerShell Module was successfully loaded."
     } # This curly bracket closes the if/else statement that checks if the AzureAD module is loaded.
 
 } # This curly bracket closes the if/else statement that checks if the AzureAD module is installed.
@@ -40,7 +41,7 @@ else{
     Import-Module AzureAD
 
     Write-Host "
-    The AzureAD PowerShell module was successfully installed and loaded."
+The AzureAD PowerShell module was successfully installed and loaded."
 } # This is where the checks for C:\Temp, installed modules, and imported modules end.
 
 Write-Host "
