@@ -28,6 +28,9 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
     
     Connect-MsolService
 
+    Write-Host"
+Connected to MSOnline for" ($cleint.OrgDisplayName).ToString()"."  "A list of users will now be pulled."
+
     Get-MsolUser -All | Where-Object {($_.UserPrincipalName -Match $client.PrimaryDomain) -and ($_.UserPrincipalName -NotMatch "#EXT#") -and ($_.isLicensed -EQ $true)} | Select DisplayName, UserPrincipalName | Sort UserPrincipalName | Export-CSV -NoTypeInformation $UserCSVExportPath
     
     Write-Host "
