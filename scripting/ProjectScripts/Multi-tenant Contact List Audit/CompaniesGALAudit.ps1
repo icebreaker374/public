@@ -13,7 +13,7 @@ else{
 
 cd C:\Temp\CompaniesGALAudit
 
-$ClientInfo = Import-CSV C:\Temp\CompaniesInfo.csv
+$ClientInfo = Import-CSV C:\Temp\CompaniesGALAudit\CompaniesInfo.csv
 
 foreach($client in $ClientInfo){ # This curly bracket opens the top level foreach loop that begins the process of verifying if a companys current users exist as contacts in the other companies Exchange environments.  This top level loop simply dumps the list of current users in the current tenant pulled from the CSV into it's own CSV file based on the companys name.
 
@@ -28,8 +28,10 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
     
     Connect-MsolService
 
-    Write-Host"
-Connected to MSOnline for" ($cleint.OrgDisplayName).ToString()"."  "A list of users will now be pulled."
+    Write-Host "
+Connected to MSOnline for" ($client.OrgDisplayName).ToString() "and user list will be generated."
+
+    Start-Sleep -Seconds 1
 
     Get-MsolUser -All | Where-Object {($_.UserPrincipalName -Match $client.PrimaryDomain) -and ($_.UserPrincipalName -NotMatch "#EXT#") -and ($_.isLicensed -EQ $true)} | Select DisplayName, UserPrincipalName | Sort UserPrincipalName | Export-CSV -NoTypeInformation $UserCSVExportPath
     
