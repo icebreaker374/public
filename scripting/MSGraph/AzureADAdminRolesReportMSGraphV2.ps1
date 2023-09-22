@@ -1,3 +1,7 @@
+Write-Host "Checking if C:\Temp exisits..."
+
+Start-Sleep -Milliseconds 1500
+
 if(Test-Path "C:\Temp"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
 
     Write-Host "C:\Temp already exists."
@@ -8,21 +12,25 @@ else{
     cd C:\
     md Temp > $null
 
-    Write-Host "A directory called 'Temp' was created at 'C:\'"
+    Write-Host "A directory called 'Temp' was created at C:\"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
 cd C:\Temp
+
+Start-Sleep -Milliseconds 1500
+
+Write-Host "Checking if the required modules are installed and loaded..." 
 
 $RequiredModules = "Microsoft.Graph.Authentication","Microsoft.Graph.Users","Microsoft.Graph.Identity.DirectoryManagement"
 
 foreach($module in $RequiredModules){
 
-    if(Get-InstalledModule -Name $module){ # This curly bracket opens the if/else statement that checks if the AzureAD module is installed.
+    if(Get-InstalledModule -Name $module){ # This curly bracket opens the if/else statement that checks if the required modules are installed.
 
         Write-Host "
         Confirmed the" $module "module is installed."
 
-        if(Get-Module -Name $module){ # This curly bracket opens the if/else statement that checks if the AzureAD module is loaded.
+        if(Get-Module -Name $module){ # This curly bracket opens the if/else statement that checks if the required modules are loaded.
 
             Write-Host "
         Confirmed the" $module "module is loaded."
@@ -34,8 +42,8 @@ foreach($module in $RequiredModules){
 
             Write-Host "
         The" $module "Module was successfully loaded."
-        } # This curly bracket closes the if/else statement that checks if the AzureAD module is loaded.
-    } # This curly bracket closes the if/else statement that checks if the AzureAD module is installed.
+        } # This curly bracket closes the if/else statement that checks if the required modules are loaded.
+    } # This curly bracket closes the if/else statement that checks if the required modules are installed.
 
     else{
 
@@ -43,21 +51,19 @@ foreach($module in $RequiredModules){
         Import-Module -Name $module
 
         Write-Host "
-        The" $module "Module was successfully loaded."
+        The" $module "Module was successfully installed and loaded."
     }
 } # This curly bracket closes the foreach loop that runs the installed/imported check for each required module.
 
+Write-Host "In 3 seconds you will be prompted for Global Administrator credentials to connect to Microsoft Graph..."
 
+Connect-MgGraph -Scopes "User.Read.All", "Directory.Read.All"  -ContextScope Process # The "Process" ContextScope prevents new PS sessions from using previously used credentials to authenticate and run the report, so it prompts for authentication every time.
 
-Connect-MgGraph -Scopes "User.Read.All", "Directory.Read.All"  -ContextScope Process # The "Process" ContextScope prevents new PS sessions from using previously used credentials to authenticate and run the report, so it prompts for
-                                                                                     # authentication every time.
-
-$DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command gets a list of the AAD admin roles that have ever been assigned and selects the display name and GUID of each
-                                                               # admin role.
+$DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command gets a list of the AAD admin roles that have ever been assigned and selects the display name and GUID of each admin role.
 
 foreach($role in $DirectoryRoles){ # This curly bracket opens the foreach loop that gets the member list of each AAD admin role.
 
-    $MembersOfRole = Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select Id # This command gets the Id value of each member in the list of each role.
+    $MembersOfRole = Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select Id # This command gets the Id value of each member in the list of each role.  It references each role based on the roles GUID.
 
     foreach($member in $MembersOfRole){ # This curly bracket opens the foreach loop that converts the Id of each member in the list of each role to that members DisplayName value.
         $MemberDisplayName = Get-MgUser -UserId $member.Id | Select DisplayName # This command is what converts each users Id to their Display Name.
