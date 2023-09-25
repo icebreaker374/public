@@ -6,6 +6,7 @@ if(Test-Path "C:\Temp\CompaniesGALAudit"){ # This curly bracket opens the if/els
 else{
 
     cd C:\
+    
     md Temp\CompaniesGALAudit > $null
 
     Write-Host "A directory called 'CompaniesGALAudit' was created at 'C:\Temp'"
@@ -24,12 +25,12 @@ foreach($module in $RequiredModules){
     if(Get-InstalledModule -Name $module){ # This curly bracket opens the if/else statement that checks if the required modules are installed.
 
         Write-Host "
-        Confirmed the" $module "module is installed."
+Confirmed the" $module "module is installed."
 
         if(Get-Module -Name $module){ # This curly bracket opens the if/else statement that checks if the required modules are loaded.
 
             Write-Host "
-        Confirmed the" $module "module is loaded."
+Confirmed the" $module "module is loaded."
         }
 
         else{
@@ -37,7 +38,7 @@ foreach($module in $RequiredModules){
             Import-Module -Name $module
 
             Write-Host "
-        The" $module "Module was successfully loaded."
+The" $module "Module was successfully loaded."
         } # This curly bracket closes the if/else statement that checks if the required modules are loaded.
     } # This curly bracket closes the if/else statement that checks if the required modules are installed.
 
@@ -47,7 +48,7 @@ foreach($module in $RequiredModules){
         Import-Module -Name $module
 
         Write-Host "
-        The" $module "Module was successfully installed and loaded."
+The" $module "Module was successfully installed and loaded."
     }
 } # This curly bracket closes the foreach loop that runs the installed/imported check for each required module.
 
