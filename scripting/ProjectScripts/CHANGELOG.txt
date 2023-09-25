@@ -5,3 +5,7 @@ CompaniesGALAudit.ps1 - Corrected an issue where the script would reference a CS
 9-25-23 @ 1230PM
 
 CompaniesGALAudit.ps1 - Added functionality to delimit the reports generated and added functionality to check that the required modules are installed.
+
+9-25-23 @ 1236PM
+
+CompaniesGALAudit.ps1 - Corrected some formatting with Write-Host commands.
