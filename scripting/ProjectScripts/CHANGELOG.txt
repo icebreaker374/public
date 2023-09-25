@@ -9,3 +9,7 @@ CompaniesGALAudit.ps1 - Added functionality to delimit the reports generated and
 9-25-23 @ 1236PM
 
 CompaniesGALAudit.ps1 - Corrected some formatting with Write-Host commands.
+
+9-25-23 @ 1240PM
+
+CompaniesGALAudit.ps1 - Added some additional Write-Host commands to better track script progress.
