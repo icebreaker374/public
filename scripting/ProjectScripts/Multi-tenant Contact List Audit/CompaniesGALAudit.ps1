@@ -44,7 +44,7 @@ The" $module "Module was successfully loaded."
 
     else{
 
-        Install-Module -Name $module
+        Install-Module -Name $module -Scope CurrentUser
         Import-Module -Name $module
 
         Write-Host "
