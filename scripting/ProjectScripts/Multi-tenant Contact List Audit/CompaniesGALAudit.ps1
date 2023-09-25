@@ -147,8 +147,10 @@ User" $user.UserPrincipalName "does not exist in" $client.OrgDisplayName "as a m
 
             # The only thing the above two $NonDelimited lines do is take the exported report, re-import it in delimited format, and re-export it in delimited format.
 
+            $FullUsersNotContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersNotContactInOtherTenantsPath.ToString()
+            
             Write-Host "
-A report of" $currentClient "users not in" $client.OrgDisplayName "as contacts was generated at:" $UsersNotContactInOtherTenantsPath
+A report of" $currentClient "users not in" $client.OrgDisplayName "as contacts was generated at:" $FullUsersNotContactInOtherTenantsPath
 
             Start-Sleep -Seconds 1
 
