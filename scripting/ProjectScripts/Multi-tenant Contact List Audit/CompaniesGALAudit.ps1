@@ -104,6 +104,11 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
             Start-Sleep -Seconds 3
             
             Connect-ExchangeOnline -ShowBanner:$false
+
+            Write-Host "
+Connected to Exchange Online for:" ($client.OrgDisplayName).ToString()
+
+            Start-Sleep -Seconds 1
             
             Write-Host "
 In 3 seconds, you will be prompted to login with Global Administrator credentials to connect to MSOnline for:" ($client.OrgDisplayName).ToString()
@@ -111,6 +116,9 @@ In 3 seconds, you will be prompted to login with Global Administrator credential
             Start-Sleep -Seconds 3
             
             Connect-MsolService
+
+            Write-Host "
+Connected to MSOnline for:" ($client.OrgDisplayName).ToString()
             
             $UsersInTenant = Import-CSV -Path $UserCSVExportPath
             
@@ -141,6 +149,8 @@ User" $user.UserPrincipalName "does not exist in" $client.OrgDisplayName "as a m
 
             Write-Host "
 A report of" $currentClient "users not in" $client.OrgDisplayName "as contacts was generated at:" $UsersNotContactInOtherTenantsPath
+
+            Start-Sleep -Seconds 1
 
             Write-Host "
 Disconnecting from Exchange Online for the following tenant:" ($client.OrgDisplayName).ToString()
