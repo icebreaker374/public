@@ -13,7 +13,7 @@ else{
 
 cd C:\Temp\CompaniesGALAudit
 
-$ClientInfo = Import-CSV C:\Temp\CompaniesGALAudit\CompaniesInfo.csv
+$ClientInfo = Import-CSV C:\Temp\CompaniesInfo.csv
 
 foreach($client in $ClientInfo){ # This curly bracket opens the top level foreach loop that begins the process of verifying if a companys current users exist as contacts in the other companies Exchange environments.  This top level loop simply dumps the list of current users in the current tenant pulled from the CSV into it's own CSV file based on the companys name.
 
