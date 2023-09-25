@@ -47,7 +47,7 @@ foreach($module in $RequiredModules){
 
     else{
 
-        Install-Module -Name $module
+        Install-Module -Name $module -Scope CurrentUser
         Import-Module -Name $module
 
         Write-Host "
