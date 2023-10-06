@@ -7,12 +7,12 @@ else{
 
     cd C:\
     
-    md Temp\LewisCompaniesGALAudit > $null
+    md Temp\CompaniesGALAudit > $null
 
     Write-Host "A directory called 'CompaniesGALAudit' was created at 'C:\Temp'"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
-cd C:\Temp\CompaniesGALAudit
+cd C:\Temp\LewisCompaniesGALAudit
 
 Start-Sleep -Seconds 1.5
 
@@ -273,6 +273,8 @@ foreach($file in $files){ # This curly bracket opens a the foreach loop that run
     if($file.FullName -Match "UserList.csv"){ # This curly bracket opens the if statement that checks if filenames contain the string "UserList.csv" and deletes the ones that do.
 
         Remove-Item $file.FullName
+
+        Write-Host "Deleted the following temporary user list CSV:" $file.FullName
     } # This curly bracket closes the if statement that checks if filenames contain the string "UserList.csv" and deletes the ones that do.
 } # This curly bracket opens a the foreach loop that runs a function to delete the UserList.csv files used temporarily by the script to reference information.
 
