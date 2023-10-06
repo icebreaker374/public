@@ -1,6 +1,6 @@
-if(Test-Path "C:\Temp\LewisCompaniesGALAudit"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
+if(Test-Path "C:\Temp\CompaniesGALAudit"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
 
-    Write-Host "C:\Temp\LewisCompaniesGALAudit already exists."
+    Write-Host "C:\Temp\CompaniesGALAudit already exists."
 }
 
 else{
@@ -12,7 +12,7 @@ else{
     Write-Host "A directory called 'CompaniesGALAudit' was created at 'C:\Temp'"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
-cd C:\Temp\LewisCompaniesGALAudit
+cd C:\Temp\CompaniesGALAudit
 
 Start-Sleep -Seconds 1.5
 
@@ -52,7 +52,7 @@ The" $module "Module was successfully installed and loaded."
     }
 } # This curly bracket closes the foreach loop that runs the installed/imported check for each required module.
 
-$ClientInfo = Import-CSV C:\Temp\LewisCompaniesInfo.csv
+$ClientInfo = Import-CSV C:\Temp\CompaniesInfo.csv
 
 foreach($client in $ClientInfo){ # This curly bracket opens the top level foreach loop that begins the process of verifying if a companys current users exist as contacts in the other companies Exchange environments.  This top level loop simply dumps the list of current users in the current tenant pulled from the CSV into it's own CSV file based on the companys name.
 
