@@ -183,14 +183,6 @@ Failed to add" $user.DisplayName "("$user.EmailAddress")" "as a mail contact in"
             $FullUsersNotContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersNotContactInOtherTenantsPath.ToString()
             $FullUsersFailedToAddAsContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersFailedToAddAsContactInOtherTenantsPath.ToString()
             $FullUsersAddedAsContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersAddedAsContactInOtherTenantsPath.ToString()
-
-            function Delimit-GeneratedReports{
-
-                $Files = $FullUsersNotContactInOtherTenantsPath, $FullUsersFailedToAddAsContactInOtherTenantsPath, $FullUsersAddedAsContactInOtherTenantsPath
-
-
-
-            }
             
             if(Test-Path $FullUsersNotContactInOtherTenantsPath){
                 
