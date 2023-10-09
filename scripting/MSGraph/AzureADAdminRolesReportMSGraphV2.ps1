@@ -63,13 +63,9 @@ $DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command ge
 
 foreach($role in $DirectoryRoles){ # This curly bracket opens the foreach loop that gets the member list of each AAD admin role.
 
-    $MembersOfRole = Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select Id # This command gets the Id value of each member in the list of each role.  It references each role based on the roles GUID.
-
-    foreach($member in $MembersOfRole){ # This curly bracket opens the foreach loop that converts the Id of each member in the list of each role to that members DisplayName value.
-        $MemberDisplayName = Get-MgUser -UserId $member.Id | Select DisplayName # This command is what converts each users Id to their Display Name.
-
-    # This command dumps the list of members for each AAD admin role in a readable format with the DisplayName of the role and the associated users.  It uses the "Sort" function on the
-    # "UserAssignedToRole" column to eliminate duplicate entries, that's a bug with the script I have to work out once Graph get's better documentation.
-    Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{Name="Azure AD Role"; Expression={$role.DisplayName}}, @{Name="UserAssignedToRole"; Expression={$MemberDisplayName.DisplayName}} | Sort UserAssignedToRole -Unique
-    } # This curly bracket closes the foreach loop that dumps the readable report of assigned AAD admin roles.
+    Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{N="Azure AD Role"; E={$role.DisplayName}}, @{N="DisplayName"; E={$_.additionalProperties['displayName']}}, @{N="UserPrincipalName"; E={$_.additionalProperties['userPrincipalName']}}
 } # This curly bracket closes the foreach loop that get's the Id's of each member  in the list of each role.
+
+# References
+
+# Reference URL: https://stackoverflow.com/questions/73542815/display-hashtable-values-from-msgraph-output # Referenced content: @{E={$_.additionalProperties['displayName']}}
