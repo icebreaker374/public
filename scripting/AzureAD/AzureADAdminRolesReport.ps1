@@ -1,15 +1,19 @@
-if(Test-Path "C:\Temp"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
+Write-Host "Checking if C:\Temp\AzureADAdminRolesReport exisits..."
 
-    Write-Host "C:\Temp already exists."
+Start-Sleep -Milliseconds 1500
+
+if(Test-Path "C:\Temp\AzureADAdminRolesReport"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
+
+    Write-Host "C:\Temp\AzureADAdminRolesReport already exists."
 }
 
 else{
 
     cd C:\
-    md Temp > $null
+    md Temp\AzureADAdminRolesReport > $null
 
     Write-Host "
-A directory called 'Temp' was created at 'C:\'"
+A directory called 'Temp\AzureADAdminRolesReport' was created at 'C:\'"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
 cd C:\Temp
