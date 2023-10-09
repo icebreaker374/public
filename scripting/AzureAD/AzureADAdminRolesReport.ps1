@@ -59,7 +59,8 @@ $DirectoryRoles = Get-AzureADDirectoryRole | Select DisplayName, ObjectId # This
 
 foreach($role in $DirectoryRoles){ # This foreach loop writes the current role it's checking assignments for to the screen then get's a list of users with that role and dumps it into a CSV, then repeats for all remaining Azure AD roles.
 
-    Write-Host "Checking assignments for the following role:" ($role.DisplayName).ToString()
+    Write-Host "
+Checking assignments for the following role:" ($role.DisplayName).ToString()
 
     Get-AzureADDirectoryRoleMember -ObjectId $role.ObjectId | Select @{Name="Azure AD Role"; Expression={$role.DisplayName}}, DisplayName, UserPrincipalName | Export-CSV C:\Temp\AzureADAdminRolesReport.csv -NoTypeInformation -Append
 
