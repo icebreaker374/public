@@ -13,3 +13,7 @@ CompaniesGALAudit.ps1 - Corrected some formatting with Write-Host commands.
 9-25-23 @ 1240PM
 
 CompaniesGALAudit.ps1 - Added some additional Write-Host commands to better track script progress.
+
+10-6-23 @ 430PM
+
+CompaniesGALAudit.ps1 - Added custom error reporting functionality, rebuilt function for report delimiting, built function to delete UserList CSV's at the end.

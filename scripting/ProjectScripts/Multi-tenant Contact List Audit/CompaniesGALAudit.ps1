@@ -1,6 +1,6 @@
 if(Test-Path "C:\Temp\CompaniesGALAudit"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
 
-    Write-Host "C:\Temp\CompaniesGALAudit already exists."
+    Write-Host "C:\Temp\sCompaniesGALAudit already exists."
 }
 
 else{
@@ -12,7 +12,7 @@ else{
     Write-Host "A directory called 'CompaniesGALAudit' was created at 'C:\Temp'"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
-cd C:\Temp\LewisCompaniesGALAudit
+cd C:\Temp\CompaniesGALAudit
 
 Start-Sleep -Seconds 1.5
 
@@ -143,7 +143,7 @@ User" $user.DisplayName "("$user.EmailAddress")" "does not exist in" $client.Org
                     
                     New-MailContact -Name $MailContactName -ExternalEmailAddress $user.EmailAddress -Alias $user.SplitUPN -FirstName $user.FirstName -LastName $user.LastName -ErrorAction SilentlyContinue -Confirm:$false | Out-Null
 
-                    if($Error.Exception -Match "Ex55FBCD"){ # This curly bracket opens the if/else statement that checks the error reason and sets the error code accordingly.
+                    if($Error.Exception -Match "Ex55FBCD"){ # This curly bracket opens the if/elseif/else statement that checks the error reason and sets the error info accordingly.
 
                         $ErrorDescription = "There is already another Exchange object using the name: " + $MailContactName.ToString()
                     }
@@ -154,7 +154,7 @@ User" $user.DisplayName "("$user.EmailAddress")" "does not exist in" $client.Org
                     }
 
                     else{
-                    } # This curly bracket closes the if/else statement that checks the error reason and sets the error code accordingly.
+                    } # This curly bracket closes the if/elseif/else statement that checks the error reason and sets the error info accordingly.
 
                     $Error.Clear()
                     
@@ -183,14 +183,6 @@ Failed to add" $user.DisplayName "("$user.EmailAddress")" "as a mail contact in"
             $FullUsersNotContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersNotContactInOtherTenantsPath.ToString()
             $FullUsersFailedToAddAsContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersFailedToAddAsContactInOtherTenantsPath.ToString()
             $FullUsersAddedAsContactInOtherTenantsPath = $PWD.ToString() + "\" + $UsersAddedAsContactInOtherTenantsPath.ToString()
-
-            function Delimit-GeneratedReports{
-
-                $Files = $FullUsersNotContactInOtherTenantsPath, $FullUsersFailedToAddAsContactInOtherTenantsPath, $FullUsersAddedAsContactInOtherTenantsPath
-
-
-
-            }
             
             if(Test-Path $FullUsersNotContactInOtherTenantsPath){
                 
