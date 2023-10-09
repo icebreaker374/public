@@ -1,10 +1,10 @@
-Write-Host "Checking if C:\Temp exisits..."
+Write-Host "Checking if C:\Temp\AzureADAdminRolesReportMSGraph exisits..."
 
 Start-Sleep -Milliseconds 1500
 
-if(Test-Path "C:\Temp"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
+if(Test-Path "C:\Temp\AzureADAdminRolesReportMSGraph"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
 
-    Write-Host "C:\Temp already exists."
+    Write-Host "C:\Temp\AzureADAdminRolesReportMSGraph already exists."
 }
 
 else{
