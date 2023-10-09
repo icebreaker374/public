@@ -64,7 +64,7 @@ $DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command ge
 foreach($role in $DirectoryRoles){ # This curly bracket opens the foreach loop that gets the member list of each AAD admin role.
 
     Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{N="Azure AD Role"; E={$role.DisplayName}}, @{N="DisplayName"; E={$_.additionalProperties['displayName']}}, @{N="UserPrincipalName"; E={$_.additionalProperties['userPrincipalName']}} | Export-CSV C:\Temp\AzureADAdminRolesReportMSGraph.csv -NoTypeInformation -Append
-} # This curly bracket closes the foreach loop that get's the Id's of each member  in the list of each role.
+} # This curly bracket closes the foreach loop that gets the member list of each AAD admin role.
 
 # References
 
