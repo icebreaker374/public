@@ -66,7 +66,7 @@ $Mailboxes = Import-CSV $AllMailboxesCSVPath
 
 # Each of the following foreach loops will check against the CSV containing the PrimarySMTPAddress of every shared mailbox in the Exchange environment and pulls the Send As, Send on Behalf of, and Read and Manage permissions for each one, then appends every entry to their respective CSV reports.
 
-#This script excludes instances where the mailbox owner can send as themselves, because obviously we know that already.
+# This script excludes instances where the mailbox owner can send as themselves, because obviously we know that already.
 
 foreach($mailbox in $Mailboxes){Get-MailboxPermission $mailbox.PrimarySmtpAddress | Where {$_.user.tostring() -ne "NT AUTHORITY\SELF"} | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; E={$mailbox.PrimarySmtpAddress}}, User, AccessRights | Export-CSV C:\Temp\SharedMailboxDelegatedAccessReport\AllMailboxesFullAccessReport.csv -NoTypeInformation -Append}
 
