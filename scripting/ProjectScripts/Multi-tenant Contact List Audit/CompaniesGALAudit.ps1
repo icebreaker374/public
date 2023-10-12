@@ -1,6 +1,6 @@
 if(Test-Path "C:\Temp\CompaniesGALAudit"){ # This curly bracket opens the if/else statement that checks if C:\Temp exists.
 
-    Write-Host "C:\Temp\sCompaniesGALAudit already exists."
+    Write-Host "C:\Temp\CompaniesGALAudit already exists."
 }
 
 else{
