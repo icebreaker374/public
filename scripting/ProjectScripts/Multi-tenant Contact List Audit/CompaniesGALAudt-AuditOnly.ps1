@@ -9,7 +9,7 @@ else{
     
     md Temp\CompaniesGALAudit > $null
 
-    Write-Host "A directory called 'LewisCompaniesGALAudit' was created at 'C:\Temp'"
+    Write-Host "A directory called 'CompaniesGALAudit' was created at 'C:\Temp'"
 } # This curly bracket closes the if/else statement that checks if C:\Temp exists.
 
 cd C:\Temp\CompaniesGALAudit
