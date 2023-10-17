@@ -1,4 +1,4 @@
-Write-Host "Checking if C:\Temp\AzureADAdminRolesReport exisits..."
+Write-Host "Checking if C:\Temp\AzureADAdminRolesReport exists..."
 
 Start-Sleep -Milliseconds 1500
 
@@ -49,7 +49,7 @@ The AzureAD PowerShell module was successfully installed and loaded."
 } # This is where the checks for C:\Temp, installed modules, and imported modules end.
 
 Write-Host "
-You will be prompted to login with Global Administrator credentials to connect to Azure Active Directory in 3 seconds..."
+In 3 seconds, you will be prompted to login with Global Administrator credentials to connect to Azure AD"
 
 Start-Sleep -Seconds 3
 
@@ -62,6 +62,6 @@ foreach($role in $DirectoryRoles){ # This foreach loop writes the current role i
     Write-Host "
 Checking assignments for the following role:" ($role.DisplayName).ToString()
 
-    Get-AzureADDirectoryRoleMember -ObjectId $role.ObjectId | Select @{Name="Azure AD Role"; Expression={$role.DisplayName}}, DisplayName, UserPrincipalName | Export-CSV C:\Temp\AzureADAdminRolesReport.csv -NoTypeInformation -Append
+    Get-AzureADDirectoryRoleMember -ObjectId $role.ObjectId | Select @{Name="Azure AD Role"; Expression={$role.DisplayName}}, DisplayName, UserPrincipalName | Export-CSV C:\Temp\AzureADAdminRolesReport\AzureADAdminRolesReport.csv -NoTypeInformation -Append
 
 } #This curly bracket closes the foreach loop that checks for all Azure AD role assignments, the script ends here.
