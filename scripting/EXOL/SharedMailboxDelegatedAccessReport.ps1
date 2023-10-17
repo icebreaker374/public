@@ -50,7 +50,7 @@ The ExchangeOnlineManagement PowerShell module was successfully installed and lo
 $AllMailboxesCSVPath = "C:\Temp\SharedMailboxDelegatedAccessReport\Mailboxes.csv"
 
 Write-Host "
-You will be prompted to login with Exchange/Global Administrator credentials to connect to Exchange Online in 3 seconds..."
+In 3 seconds, you will be prompted to login with Global Administrator credentials to connect to Exchange Online..."
 
 Start-Sleep -Seconds 3
 
