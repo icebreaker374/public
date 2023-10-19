@@ -1,6 +1,6 @@
 ﻿$Cmdlet = Read-Host "Please enter the cmdlet you want to view the available context scopes for"
 
-((Find-MgGraphCommand -Command $Cmdlet).Permissions.Name) | Select @{N='AvailableContextScopes'; E={$_}} | Out-String
+((Find-MgGraphCommand -Command $Cmdlet | Select-Object -First 1 ).Permissions.Name) | Select @{N='AvailableContextScopes'; E={$_}} | Out-String
 
 Read-Host "Press Enter to exit"
 
