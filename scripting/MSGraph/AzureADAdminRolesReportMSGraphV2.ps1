@@ -17,9 +17,9 @@ else{
 
 cd C:\Temp\AzureADAdminRolesReportMSGraph
 
-Start-Sleep -Milliseconds 1500
+Write-Host "Checking if the required modules are installed and loaded..."
 
-Write-Host "Checking if the required modules are installed and loaded..." 
+Start-Sleep -Milliseconds 1500
 
 $RequiredModules = "Microsoft.Graph.Authentication","Microsoft.Graph.Users","Microsoft.Graph.Identity.DirectoryManagement"
 
@@ -61,14 +61,14 @@ Start-Sleep -Seconds 3
 
 Connect-MgGraph -Scopes "User.Read.All", "Directory.Read.All"  -ContextScope Process -NoWelcome # The "Process" ContextScope prevents new PS sessions from using previously used credentials to authenticate and run the report, so it prompts for authentication every time.
 
-$DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command gets a list of the AAD admin roles that have ever been assigned and selects the display name and GUID of each admin role.
+$DirectoryRoles = Get-MgDirectoryRole | Select DisplayName, Id # This command gets a list of the AAD admin roles that have ever been assigned (it seems that's the way Get-MgDirectoryRole works) and selects the display name and GUID of each admin role.
 
-foreach($role in $DirectoryRoles){ # This curly bracket opens the foreach loop that gets the member list of each AAD admin role.
+foreach($role in $DirectoryRoles){ # This curly bracket opens the foreach loop that gets the member list of each AAD admin role and outputs it to CSV.
 
     Write-Host "Checking assignments for the following role:" ($role.DisplayName).ToString()
     
-    Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{N="Azure AD Role"; E={$role.DisplayName}}, @{N="DisplayName"; E={$_.additionalProperties['displayName']}}, @{N="UserPrincipalName"; E={$_.additionalProperties['userPrincipalName']}} | Export-CSV C:\Temp\AzureADAdminRolesReportMSGraph.csv -NoTypeInformation -Append
-} # This curly bracket closes the foreach loop that gets the member list of each AAD admin role.
+    Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{N="Azure AD Role"; E={$role.DisplayName}}, @{N="DisplayName"; E={$_.additionalProperties['displayName']}}, @{N="UserPrincipalName"; E={$_.additionalProperties['userPrincipalName']}} | Export-CSV C:\Temp\AzureADAdminRolesReportMSGraph\AzureADAdminRolesReportMSGraph.csv -NoTypeInformation -Append
+} # This curly bracket closes the foreach loop that gets the member list of each AAD admin role and outputs it to CSV.
 
 # References
 
