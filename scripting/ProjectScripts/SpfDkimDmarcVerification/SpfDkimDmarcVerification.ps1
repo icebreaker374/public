@@ -26,12 +26,12 @@ else{
             $Error.Clear()
         }
 
-        elseif($SPFRecords -EQ $null){
+        elseif($SPFConfigurationCheck -EQ $null){
 
             Write-Host "No SPF records were found for: $DomainDisplayName"
         }
 
-        elseif($SPFRecords -NE $null){
+        elseif($SPFConfigurationCheck -NE $null){
 
             Write-Host "Domain '$DomainDisplayName' has the following SPF records setup:"
             Write-Host $SPFConfigurationCheck
@@ -78,6 +78,8 @@ else{
         if($Error.Exception -Match "_dmarc.$DomainDisplayName : DNS name does not exist"){
 
             Write-Host "No DMARC record was found for: $DomainDisplayName"
+            Write-Host "
+"
 
             $Error.Clear()
         }
@@ -85,17 +87,18 @@ else{
         elseif($DMARCConfigurationCheck.Name -Match $DomainDisplayName){
 
             Write-Host "DMARC record is configured for: $DomainDisplayName"
+            Write-Host "
+"
         }
 
         else{
 
             Write-Host "DMARC configuration status for '$DomainDisplayName' is unknown."
+            Write-Host "
+"
         }
 
     }
-
-    Write-Host "
-"
 }
 
 # https://www.reddit.com/r/PowerShell/comments/spdtqh/programmatically_validate_spfdkimdmarc_records/
