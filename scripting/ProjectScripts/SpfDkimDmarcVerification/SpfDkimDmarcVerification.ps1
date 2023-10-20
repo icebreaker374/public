@@ -101,4 +101,6 @@ else{
     }
 }
 
+Read-Host "Press Enter to continue..."
+
 # https://www.reddit.com/r/PowerShell/comments/spdtqh/programmatically_validate_spfdkimdmarc_records/
