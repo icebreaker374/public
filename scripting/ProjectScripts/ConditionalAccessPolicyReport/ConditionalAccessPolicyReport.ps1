@@ -62,8 +62,6 @@ foreach($policy in $Policies){
             $Users += $UserDisplayName.DisplayName
         }
 
-        $IncludedUsers = $Users
-
         Write-Host ""
         Write-Host "Included Users:"
 
@@ -113,8 +111,6 @@ foreach($policy in $Policies){
             $Users += $UserDisplayName.DisplayName
         }
 
-        $ExcludedUsers = $Users
-
         Write-Host ""
         Write-Host "Excluded Users:"
 
@@ -154,9 +150,6 @@ foreach($policy in $Policies){
 
             $Groups += $GroupDisplayName.DisplayName
         }
-
-        $IncludedGroups = $Groups
-
 
         Write-Host ""
         Write-Host "Included Groups:"
@@ -198,9 +191,6 @@ foreach($policy in $Policies){
             $Groups += $GroupDisplayName.DisplayName
         }
 
-        $ExcludedGroups = $Groups
-
-
         Write-Host ""
         Write-Host "Excluded Groups:"
 
@@ -230,11 +220,45 @@ foreach($policy in $Policies){
 
     # End if/else statement for excluded groups check.  Begin if/else statement for included applications check.
 
+    if($policy.Conditions.Applications.IncludeApplications -EQ "None"){
 
+        $IncludedApps = "NONE"
 
+        Write-Host ""
+        Write-Host "Included Apps:"
+        Write-Host $IncludedApps
+    }
 
+    elseif($policy.Conditions.Applications.IncludeApplications -EQ "All"){
 
+        $IncludedApps = "ALL"
 
+        Write-Host ""
+        Write-Host "Included Apps:"
+        Write-Host $IncludedApps
+    }
+
+    elseif(($policy.Conditions.Applications.IncludeApplications -NE "None") -and ($policy.Conditions.Applications.IncludeApplications -NE "All")){
+
+        $Apps = @()
+        
+        foreach($app in $policy.Conditions.Applications.IncludeApplications){
+
+            $AppDisplayName = Get-AzureADGroup -ObjectId $app | Select DisplayName
+
+            $Apps+= $AppDisplayName.DisplayName
+
+        }
+    }
+
+    else{
+
+        $IncludedApps = "UNKNOWN"
+
+        Write-Host ""
+        Write-Host "Included Apps:"
+        Write-Host $IncludedApps
+    }
 
 
 
