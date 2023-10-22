@@ -10,28 +10,28 @@ foreach($policy in $Policies){
     
     Write-Host "-----------------------------------------------------------------------------------------------------" -ForegroundColor Cyan
     
-    Write-Host "Conditional Access Policy Name: '$PolicyName'"
+    Write-Host "CA Policy Name: '$PolicyName'"
 
     # Begin if/else statement for policy status.
     
     if($policy.State -EQ "enabled"){
 
-        $PolicyStatus = "Conditional Access Policy Status: ENABLED"
+        $PolicyStatus = "CA Policy Status: ENABLED"
     }
 
     elseif($policy.State -EQ "disabled"){
 
-        $PolicyStatus = "Conditional Access Policy Status: DISABLED"
+        $PolicyStatus = "CA Access Policy Status: DISABLED"
     }
 
     elseif($policy.State -EQ "enabledForReportingButNotEnforced"){
 
-        $PolicyStatus = "Conditional Access Policy Status: REPORT-ONLY"
+        $PolicyStatus = "CA Policy Status: REPORT-ONLY"
     }
 
     else{
 
-        $PolicyStatus = "Conditional Access Policy Status: UNKNOWN"
+        $PolicyStatus = "CA Access Policy Status: UNKNOWN"
     }
 
     # End if/else statement for policy status.
@@ -270,13 +270,13 @@ foreach($policy in $Policies){
     if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -Contains "Block")){
 
         Write-Host ""
-        Write-Host "Policy '$PolicyName' DOES block basic authentication."
+        Write-Host "CA Policy '$PolicyName' DOES block basic authentication."
     }
 
     else{
 
         Write-Host ""
-        Write-Host "Policy '$PolicyName' DOES NOT block basic authentication."
+        Write-Host "CA Policy '$PolicyName' DOES NOT block basic authentication."
     }
 
     Write-Host "-----------------------------------------------------------------------------------------------------" -ForegroundColor Cyan
