@@ -312,7 +312,7 @@ foreach($policy in $Policies){
         Write-Host "CA Policy '$PolicyName' DOES block basic authentication." -ForegroundColor Green
     }
 
-    if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -NotContains "Block")){
+    elseif(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -NotContains "Block")){
 
         Write-Host ""
         Write-Host "CA Policy '$PolicyName' ALLOWS basic authentication." -ForegroundColor Red
