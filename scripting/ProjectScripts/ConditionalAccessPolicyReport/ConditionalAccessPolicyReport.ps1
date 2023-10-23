@@ -102,16 +102,7 @@ foreach($policy in $Policies){
 
     # End if/else statement for included users check.  Begin if/else statement for excluded users check.
 
-    if($policy.Conditions.Users.ExcludeUsers -EQ "All"){
-
-        $ExcludedUsers = "All Users"
-
-        Write-Host ""
-        Write-Host "Excluded users:" -ForegroundColor Red
-        Write-Host $ExcludedUsers -ForegroundColor Red
-    }
-
-    elseif(($policy.Conditions.Users.ExcludeUsers -NE "All") -and ($policy.Conditions.Users.ExcludeUsers -NE $null)){
+    if($policy.Conditions.Users.ExcludeUsers.Count -GT "0"){
 
         $Users = @()
         
@@ -176,8 +167,8 @@ foreach($policy in $Policies){
         $IncludedGroups = "NONE"
 
         Write-Host ""
-        Write-Host "Included Groups:" -ForegroundColor Yellow
-        Write-Host $IncludedGroups -ForegroundColor Yellow
+        Write-Host "Included Groups:" -ForegroundColor Green
+        Write-Host $IncludedGroups -ForegroundColor Green
     }
 
     else{
@@ -236,8 +227,8 @@ foreach($policy in $Policies){
         $IncludedApps = "NONE"
 
         Write-Host ""
-        Write-Host "Included Apps:" -ForegroundColor Yellow
-        Write-Host $IncludedApps -ForegroundColor Yellow
+        Write-Host "Included Apps:" -ForegroundColor Green
+        Write-Host $IncludedApps -ForegroundColor Green
     }
 
     elseif($policy.Conditions.Applications.IncludeApplications.Count -GT "0"){
@@ -301,7 +292,211 @@ foreach($policy in $Policies){
         Write-Host $ExcludedApps -ForegroundColor Red
     }
 
+    # End if/else statement for excluded applications check.  Begin if/else statement for included directory roles check.
 
+    if($policy.Conditions.Users.IncludeRoles.Count -GT "0"){
+
+        $Roles = @()
+        
+        foreach($role in $policy.Conditions.Users.IncludeRoles){
+
+            $RoleDisplayName = Get-AzureADMSRoleDefinition -Id $role | Select DisplayName
+
+            $Roles += $RoleDisplayName.DisplayName
+        }
+
+        Write-Host ""
+        Write-Host "Included Roles:" -ForegroundColor Yellow
+
+        foreach($rolename in $Roles){
+            
+            Write-Host $rolename -ForegroundColor Yellow
+        }
+    }
+
+    elseif($policy.Conditions.Users.IncludeRoles.Count -EQ "0"){
+
+        $IncludedRoles = "NONE"
+
+        Write-Host ""
+        Write-Host "Included Roles:" -ForegroundColor Green
+        Write-Host $IncludedRoles -ForegroundColor Green
+    }
+
+    else{
+
+        $IncludedRoles = "UNKNOWN"
+
+        Write-Host ""
+        Write-Host "Included Roles:" -ForegroundColor Red
+        Write-Host $IncludedRoles -ForegroundColor Red
+    }
+
+    # End if/else statement for included directory roles check.  Begin if/else statement for excluded directory roles check.
+
+    if($policy.Conditions.Users.ExcludeRoles.Count -GT "0"){
+
+        $Roles = @()
+        
+        foreach($role in $policy.Conditions.Users.ExcludeRoles){
+
+            $RoleDisplayName = Get-AzureADMSRoleDefinition -Id $role | Select DisplayName
+
+            $Roles += $RoleDisplayName.DisplayName
+        }
+
+        Write-Host ""
+        Write-Host "Excluded Roles:" -ForegroundColor Yellow
+
+        foreach($rolename in $Roles){
+            
+            Write-Host $rolename -ForegroundColor Yellow
+        }
+    }
+
+    elseif($policy.Conditions.Users.ExcludeRoles.Count -EQ "0"){
+
+        $ExcludedRoles = "NONE"
+
+        Write-Host ""
+        Write-Host "Excluded Roles:" -ForegroundColor Green
+        Write-Host $ExcludedRoles -ForegroundColor Green
+    }
+
+    else{
+
+        $ExcludedRoles = "UNKNOWN"
+
+        Write-Host ""
+        Write-Host "Excluded Roles:" -ForegroundColor Red
+        Write-Host $ExcludedRoles -ForegroundColor Red
+    }
+
+    # End if/else statement for included directory roles check.  Begin if/else statement for Block/Grant controls configuration.
+
+    if($policy.GrantControls._Operator -EQ "AND"){
+
+        $GrantControls = "Require all of the selected controls."
+
+        Write-Host ""
+        Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Green
+
+        $RequiredControls = $policy.GrantControls.BuiltInControls
+        $RequiredControlsWithDisplayName = @()
+
+        foreach($requiredcontrol in $RequiredControls){
+
+            if($requiredcontrol -EQ "Mfa"){
+
+                $controlDisplayName = "Require multifactor authentication."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "CompliantDevice"){
+
+                $controlDisplayName = "Require device to be marked as compliant."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "DomainJoinedDevice"){
+
+                $controlDisplayName = "Require Microsoft Entra hybrid joined device."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "ApprovedApplication"){
+
+                $controlDisplayName = "Require approved client app."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "CompliantApplication"){
+
+                $controlDisplayName = "Require app protection policy."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            else{
+                
+                $controlDisplayName = "UNKNOWN"
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+        }
+
+        Write-Host ""
+        Write-Host "Controls:" -ForegroundColor Green
+        
+        foreach($requiredcontrolname in $RequiredControlsWithDisplayName){
+
+            Write-Host $requiredcontrolname -ForegroundColor Green
+        }
+    }
+
+    elseif($policy.GrantControls._Operator -EQ "OR"){
+
+        $GrantControls = "Require one of the selected controls."
+
+        Write-Host ""
+        Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Yellow
+
+        $RequiredControls = $policy.GrantControls.BuiltInControls
+        $RequiredControlsWithDisplayName = @()
+
+        foreach($requiredcontrol in $RequiredControls){
+
+            if($requiredcontrol -EQ "Mfa"){
+
+                $controlDisplayName = "Require multifactor authentication."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "CompliantDevice"){
+
+                $controlDisplayName = "Require device to be marked as compliant."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "DomainJoinedDevice"){
+
+                $controlDisplayName = "Require Microsoft Entra hybrid joined device."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "ApprovedApplication"){
+
+                $controlDisplayName = "Require approved client app."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "CompliantApplication"){
+
+                $controlDisplayName = "Require app protection policy."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            elseif($requiredcontrol -EQ "Block"){
+
+                $controlDisplayName = "Block Access."
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+
+            else{
+                
+                $controlDisplayName = "UNKNOWN"
+                $RequiredControlsWithDisplayName += $controlDisplayName
+            }
+        }
+
+        Write-Host ""
+        Write-Host "Controls:" -ForegroundColor Yellow
+        
+        foreach($requiredcontrolname in $RequiredControlsWithDisplayName){
+
+            Write-Host $requiredcontrolname -ForegroundColor Yellow
+        }
+    }
+
+    # End if/else statement for Block/Grant controls configuration.
 
 
     # Block basic authentication policy check.
