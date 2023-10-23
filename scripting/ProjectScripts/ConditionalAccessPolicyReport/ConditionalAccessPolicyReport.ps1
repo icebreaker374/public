@@ -10,48 +10,59 @@ foreach($policy in $Policies){
     
     Write-Host "-----------------------------------------------------------------------------------------------------" -ForegroundColor Cyan
     
-    Write-Host "CA Policy Name: '$PolicyName'"
+    Write-Host "CA Policy Name: '$PolicyName'" -ForegroundColor Magenta
 
     # Begin if/else statement for policy status.
     
     if($policy.State -EQ "enabled"){
 
         $PolicyStatus = "CA Policy Status: ENABLED"
+        Write-Host ""
+        Write-Host $PolicyStatus -ForegroundColor Green
     }
 
     elseif($policy.State -EQ "disabled"){
 
         $PolicyStatus = "CA Access Policy Status: DISABLED"
+        Write-Host ""
+        Write-Host $PolicyStatus -ForegroundColor Red
     }
 
     elseif($policy.State -EQ "enabledForReportingButNotEnforced"){
 
         $PolicyStatus = "CA Policy Status: REPORT-ONLY"
+        Write-Host ""
+        Write-Host $PolicyStatus -ForegroundColor Yellow
     }
 
     else{
 
         $PolicyStatus = "CA Access Policy Status: UNKNOWN"
+        Write-Host ""
+        Write-Host $PolicyStatus -ForegroundColor Red
     }
 
-    # End if/else statement for policy status.
-
-    Write-Host ""
-    Write-Host $PolicyStatus
-    
-
-    # Begin if/else statement for included users check.
+    # End if/else statement for policy status.  Begin if/else statement for included users check.
     
     if($policy.Conditions.Users.IncludeUsers -EQ "All"){
 
         $IncludedUsers = "All Users"
 
         Write-Host ""
-        Write-Host "Included Users:"
-        Write-Host $IncludedUsers
+        Write-Host "Included Users:" -ForegroundColor Green
+        Write-Host $IncludedUsers -ForegroundColor Green
     }
 
-    elseif(($policy.Conditions.Users.IncludeUsers -NE "All") -and ($policy.Conditions.Users.IncludeUsers -NE $null)){
+    elseif($policy.Conditions.Users.IncludeUsers -EQ "None"){
+
+        $IncludedUsers = "NONE"
+
+        Write-Host ""
+        Write-Host "Included Users:" -ForegroundColor Yellow
+        Write-Host $IncludedUsers -ForegroundColor Yellow
+    }
+    
+    elseif(($policy.Conditions.Users.IncludeUsers -NE "All") -and ($policy.Conditions.Users.IncludeUsers -NE "None")){
 
         $Users = @()
         
@@ -63,11 +74,11 @@ foreach($policy in $Policies){
         }
 
         Write-Host ""
-        Write-Host "Included Users:"
+        Write-Host "Included Users:" -ForegroundColor Yellow
 
         foreach($useraccount in $Users){
             
-            Write-Host $useraccount
+            Write-Host $useraccount -ForegroundColor Yellow
         }
     }
 
@@ -76,8 +87,8 @@ foreach($policy in $Policies){
         $IncludedUsers = "NONE"
 
         Write-Host ""
-        Write-Host "Included Users:"
-        Write-Host $IncludedUsers
+        Write-Host "Included Users:" -ForegroundColor Yellow
+        Write-Host $IncludedUsers -ForegroundColor Yellow
     }
 
     else{
@@ -85,8 +96,8 @@ foreach($policy in $Policies){
         $IncludedUsers = "UNKNOWN"
 
         Write-Host ""
-        Write-Host "Included Users:"
-        Write-Host $IncludedUsers
+        Write-Host "Included Users:" -ForegroundColor Red
+        Write-Host $IncludedUsers -ForegroundColor Red
     }
 
     # End if/else statement for included users check.  Begin if/else statement for excluded users check.
@@ -96,8 +107,8 @@ foreach($policy in $Policies){
         $ExcludedUsers = "All Users"
 
         Write-Host ""
-        Write-Host "Excluded users:"
-        Write-Host $ExcludedUsers
+        Write-Host "Excluded users:" -ForegroundColor Red
+        Write-Host $ExcludedUsers -ForegroundColor Red
     }
 
     elseif(($policy.Conditions.Users.ExcludeUsers -NE "All") -and ($policy.Conditions.Users.ExcludeUsers -NE $null)){
@@ -112,11 +123,11 @@ foreach($policy in $Policies){
         }
 
         Write-Host ""
-        Write-Host "Excluded Users:"
+        Write-Host "Excluded Users:" -ForegroundColor Yellow
 
         foreach($useraccount in $Users){
             
-            Write-Host $useraccount
+            Write-Host $useraccount -ForegroundColor Yellow
         }
     }
 
@@ -125,8 +136,8 @@ foreach($policy in $Policies){
         $ExcludedUsers = "NONE"
 
         Write-Host ""
-        Write-Host "Excluded Users:"
-        Write-Host $ExcludedUsers
+        Write-Host "Excluded Users:" -ForegroundColor Green
+        Write-Host $ExcludedUsers -ForegroundColor Green
     }
 
     else{
@@ -134,8 +145,8 @@ foreach($policy in $Policies){
         $ExcludedUsers = "UNKNOWN"
 
         Write-Host ""
-        Write-Host "Excluded users:"
-        Write-Host $ExcludedUsers
+        Write-Host "Excluded users:" -ForegroundColor Red
+        Write-Host $ExcludedUsers -ForegroundColor Red
     }
 
     # End if/else statement for excluded users check.  Begin if/else statement for included groups check.
@@ -152,11 +163,11 @@ foreach($policy in $Policies){
         }
 
         Write-Host ""
-        Write-Host "Included Groups:"
+        Write-Host "Included Groups:" -ForegroundColor Yellow
 
         foreach($groupname in $Groups){
             
-            Write-Host $groupname
+            Write-Host $groupname -ForegroundColor Yellow
         }
     }
 
@@ -165,8 +176,8 @@ foreach($policy in $Policies){
         $IncludedGroups = "NONE"
 
         Write-Host ""
-        Write-Host "Included Groups:"
-        Write-Host $IncludedGroups
+        Write-Host "Included Groups:" -ForegroundColor Yellow
+        Write-Host $IncludedGroups -ForegroundColor Yellow
     }
 
     else{
@@ -174,8 +185,8 @@ foreach($policy in $Policies){
         $IncludedGroups = "UNKNOWN"
 
         Write-Host ""
-        Write-Host "Included Groups:"
-        Write-Host $IncludedGroups
+        Write-Host "Included Groups:" -ForegroundColor Red
+        Write-Host $IncludedGroups -ForegroundColor Red
     }
 
     # End if/else statement for included groups check.  Begin if/else statement for excluded groups check.
@@ -192,11 +203,11 @@ foreach($policy in $Policies){
         }
 
         Write-Host ""
-        Write-Host "Excluded Groups:"
+        Write-Host "Excluded Groups:" -ForegroundColor Yellow
 
         foreach($groupname in $Groups){
             
-            Write-Host $groupname
+            Write-Host $groupname -ForegroundColor Yellow
         }
     }
 
@@ -205,8 +216,8 @@ foreach($policy in $Policies){
         $ExcludedGroups = "NONE"
 
         Write-Host ""
-        Write-Host "Excluded Groups:"
-        Write-Host $ExcludedGroups
+        Write-Host "Excluded Groups:" -ForegroundColor Green
+        Write-Host $ExcludedGroups -ForegroundColor Green
     }
 
     else{
@@ -214,8 +225,8 @@ foreach($policy in $Policies){
         $ExcludedGroups = "UNKNOWN"
 
         Write-Host ""
-        Write-Host "Excluded Groups:"
-        Write-Host $ExcludedGroups
+        Write-Host "Excluded Groups:" -ForegroundColor Red
+        Write-Host $ExcludedGroups -ForegroundColor Red
     }
 
     # End if/else statement for excluded groups check.  Begin if/else statement for included applications check.
@@ -225,30 +236,22 @@ foreach($policy in $Policies){
         $IncludedApps = "NONE"
 
         Write-Host ""
-        Write-Host "Included Apps:"
-        Write-Host $IncludedApps
+        Write-Host "Included Apps:" -ForegroundColor Yellow
+        Write-Host $IncludedApps -ForegroundColor Yellow
     }
 
-    elseif($policy.Conditions.Applications.IncludeApplications -EQ "All"){
-
-        $IncludedApps = "ALL"
-
-        Write-Host ""
-        Write-Host "Included Apps:"
-        Write-Host $IncludedApps
-    }
-
-    elseif(($policy.Conditions.Applications.IncludeApplications -NE "None") -and ($policy.Conditions.Applications.IncludeApplications -NE "All")){
-
-        $Apps = @()
+    elseif($policy.Conditions.Applications.IncludeApplications.Count -GT "0"){
+        
+        $IncludedApps = @()
         
         foreach($app in $policy.Conditions.Applications.IncludeApplications){
 
-            $AppDisplayName = Get-AzureADGroup -ObjectId $app | Select DisplayName
-
-            $Apps+= $AppDisplayName.DisplayName
-
+            $IncludedApps += $app
         }
+
+        Write-Host ""
+        Write-Host "Included Apps:" -ForegroundColor Yellow
+        Write-Host $IncludedApps -ForegroundColor Yellow
     }
 
     else{
@@ -256,11 +259,47 @@ foreach($policy in $Policies){
         $IncludedApps = "UNKNOWN"
 
         Write-Host ""
-        Write-Host "Included Apps:"
-        Write-Host $IncludedApps
+        Write-Host "Included Apps:" -ForegroundColor Red
+        Write-Host $IncludedApps -ForegroundColor Red
     }
 
+    # End if/else statement for included applications check.  Begin if/else statement for excluded applications check.
 
+    if($policy.Conditions.Applications.ExcludeApplications.Count -EQ "0"){
+
+        $ExcludedApps = "NONE"
+
+        Write-Host ""
+        Write-Host "Excluded Apps:" -ForegroundColor Green
+        Write-Host $ExcludedApps -ForegroundColor Green
+    }
+
+    elseif($policy.Conditions.Applications.ExcludeApplications.Count -GT "0"){
+        
+        $ExcludedApps = @()
+        
+        foreach($app in $policy.Conditions.Applications.ExcludeApplications){
+
+            $ExcludedApps += $app
+        }
+
+        Write-Host ""
+        Write-Host "Excluded Apps:" -ForegroundColor Yellow
+        
+        foreach($excludedApp in $ExcludedApps){
+            
+            Write-Host $excludedApp -ForegroundColor Yellow
+        }
+    }
+
+    else{
+
+        $ExcludedApps = "UNKNOWN"
+
+        Write-Host ""
+        Write-Host "Excluded Apps:" -ForegroundColor Red
+        Write-Host $ExcludedApps -ForegroundColor Red
+    }
 
 
 
@@ -270,13 +309,19 @@ foreach($policy in $Policies){
     if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -Contains "Block")){
 
         Write-Host ""
-        Write-Host "CA Policy '$PolicyName' DOES block basic authentication."
+        Write-Host "CA Policy '$PolicyName' DOES block basic authentication." -ForegroundColor Green
+    }
+
+    if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -NotContains "Block")){
+
+        Write-Host ""
+        Write-Host "CA Policy '$PolicyName' ALLOWS basic authentication." -ForegroundColor Red
     }
 
     else{
 
         Write-Host ""
-        Write-Host "CA Policy '$PolicyName' DOES NOT block basic authentication."
+        Write-Host "CA Policy '$PolicyName' DOES NOT block basic authentication." -ForegroundColor Yellow
     }
 
     Write-Host "-----------------------------------------------------------------------------------------------------" -ForegroundColor Cyan
