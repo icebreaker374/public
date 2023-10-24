@@ -5,50 +5,51 @@ $PolicyCount = 1
 foreach($policy in $Policies){
 
     $PolicyName = $policy.DisplayName
+    $PolicyID = $policy.Id
 
     Write-Host "Policy $PolicyCount" -ForegroundColor Cyan
     
     Write-Host "-----------------------------------------------------------------------------------------------------" -ForegroundColor Cyan
     
     Write-Host "CA Policy Name: '$PolicyName'" -ForegroundColor Magenta
+    Write-Host "CA Policy ID: '$PolicyID'" -ForegroundColor Magenta
 
     # Begin if/else statement for policy status.
     
+    Write-Host ""
+
     if($policy.State -EQ "enabled"){
 
         $PolicyStatus = "CA Policy Status: ENABLED"
-        Write-Host ""
         Write-Host $PolicyStatus -ForegroundColor Green
     }
 
     elseif($policy.State -EQ "disabled"){
 
         $PolicyStatus = "CA Access Policy Status: DISABLED"
-        Write-Host ""
         Write-Host $PolicyStatus -ForegroundColor Red
     }
 
     elseif($policy.State -EQ "enabledForReportingButNotEnforced"){
 
         $PolicyStatus = "CA Policy Status: REPORT-ONLY"
-        Write-Host ""
         Write-Host $PolicyStatus -ForegroundColor Yellow
     }
 
     else{
 
         $PolicyStatus = "CA Access Policy Status: UNKNOWN"
-        Write-Host ""
         Write-Host $PolicyStatus -ForegroundColor Red
     }
 
     # End if/else statement for policy status.  Begin if/else statement for included users check.
     
+    Write-Host ""
+
     if($policy.Conditions.Users.IncludeUsers -EQ "All"){
 
         $IncludedUsers = "All Users"
 
-        Write-Host ""
         Write-Host "Included Users:" -ForegroundColor Green
         Write-Host $IncludedUsers -ForegroundColor Green
     }
@@ -57,7 +58,6 @@ foreach($policy in $Policies){
 
         $IncludedUsers = "NONE"
 
-        Write-Host ""
         Write-Host "Included Users:" -ForegroundColor Yellow
         Write-Host $IncludedUsers -ForegroundColor Yellow
     }
@@ -73,7 +73,6 @@ foreach($policy in $Policies){
             $Users += $UserDisplayName.DisplayName
         }
 
-        Write-Host ""
         Write-Host "Included Users:" -ForegroundColor Yellow
 
         foreach($useraccount in $Users){
@@ -86,7 +85,6 @@ foreach($policy in $Policies){
 
         $IncludedUsers = "NONE"
 
-        Write-Host ""
         Write-Host "Included Users:" -ForegroundColor Yellow
         Write-Host $IncludedUsers -ForegroundColor Yellow
     }
@@ -95,12 +93,13 @@ foreach($policy in $Policies){
 
         $IncludedUsers = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Included Users:" -ForegroundColor Red
         Write-Host $IncludedUsers -ForegroundColor Red
     }
 
     # End if/else statement for included users check.  Begin if/else statement for excluded users check.
+
+    Write-Host ""
 
     if($policy.Conditions.Users.ExcludeUsers.Count -GT "0"){
 
@@ -113,7 +112,6 @@ foreach($policy in $Policies){
             $Users += $UserDisplayName.DisplayName
         }
 
-        Write-Host ""
         Write-Host "Excluded Users:" -ForegroundColor Yellow
 
         foreach($useraccount in $Users){
@@ -126,7 +124,6 @@ foreach($policy in $Policies){
 
         $ExcludedUsers = "NONE"
 
-        Write-Host ""
         Write-Host "Excluded Users:" -ForegroundColor Green
         Write-Host $ExcludedUsers -ForegroundColor Green
     }
@@ -135,12 +132,13 @@ foreach($policy in $Policies){
 
         $ExcludedUsers = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Excluded users:" -ForegroundColor Red
         Write-Host $ExcludedUsers -ForegroundColor Red
     }
 
     # End if/else statement for excluded users check.  Begin if/else statement for included groups check.
+
+    Write-Host ""
 
     if($policy.Conditions.Users.IncludeGroups.Count -GT "0"){
 
@@ -153,7 +151,6 @@ foreach($policy in $Policies){
             $Groups += $GroupDisplayName.DisplayName
         }
 
-        Write-Host ""
         Write-Host "Included Groups:" -ForegroundColor Yellow
 
         foreach($groupname in $Groups){
@@ -166,7 +163,6 @@ foreach($policy in $Policies){
 
         $IncludedGroups = "NONE"
 
-        Write-Host ""
         Write-Host "Included Groups:" -ForegroundColor Green
         Write-Host $IncludedGroups -ForegroundColor Green
     }
@@ -175,12 +171,13 @@ foreach($policy in $Policies){
 
         $IncludedGroups = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Included Groups:" -ForegroundColor Red
         Write-Host $IncludedGroups -ForegroundColor Red
     }
 
     # End if/else statement for included groups check.  Begin if/else statement for excluded groups check.
+
+    Write-Host ""
 
     if($policy.Conditions.Users.ExcludeGroups.Count -GT "0"){
 
@@ -193,7 +190,6 @@ foreach($policy in $Policies){
             $Groups += $GroupDisplayName.DisplayName
         }
 
-        Write-Host ""
         Write-Host "Excluded Groups:" -ForegroundColor Yellow
 
         foreach($groupname in $Groups){
@@ -206,7 +202,6 @@ foreach($policy in $Policies){
 
         $ExcludedGroups = "NONE"
 
-        Write-Host ""
         Write-Host "Excluded Groups:" -ForegroundColor Green
         Write-Host $ExcludedGroups -ForegroundColor Green
     }
@@ -215,22 +210,30 @@ foreach($policy in $Policies){
 
         $ExcludedGroups = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Excluded Groups:" -ForegroundColor Red
         Write-Host $ExcludedGroups -ForegroundColor Red
     }
 
     # End if/else statement for excluded groups check.  Begin if/else statement for included applications check.
 
+    Write-Host ""
+    
     if($policy.Conditions.Applications.IncludeApplications -EQ "None"){
 
         $IncludedApps = "NONE"
 
-        Write-Host ""
         Write-Host "Included Apps:" -ForegroundColor Green
         Write-Host $IncludedApps -ForegroundColor Green
     }
 
+    elseif($policy.Conditions.Applications.IncludeApplications -EQ "All"){
+
+        $IncludedApps = "All cloud apps"
+
+        Write-Host "Included Apps:" -ForegroundColor Green
+        Write-Host $IncludedApps -ForegroundColor Green
+    }
+    
     elseif($policy.Conditions.Applications.IncludeApplications.Count -GT "0"){
         
         $IncludedApps = @()
@@ -240,27 +243,34 @@ foreach($policy in $Policies){
             $IncludedApps += $app
         }
 
-        Write-Host ""
         Write-Host "Included Apps:" -ForegroundColor Yellow
         Write-Host $IncludedApps -ForegroundColor Yellow
     }
 
+    elseif($policy.Conditions.Applications.IncludeApplications.Capacity -EQ "0"){
+
+        $IncludedApps = "NONE"
+        
+        Write-Host "Included Apps:" -ForegroundColor Green
+        Write-Host $IncludedApps -ForegroundColor Green
+    } # For the time being this elseif fixes a bug where if a policy targets
+    
     else{
 
         $IncludedApps = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Included Apps:" -ForegroundColor Red
         Write-Host $IncludedApps -ForegroundColor Red
     }
 
     # End if/else statement for included applications check.  Begin if/else statement for excluded applications check.
 
+    Write-Host ""
+
     if($policy.Conditions.Applications.ExcludeApplications.Count -EQ "0"){
 
         $ExcludedApps = "NONE"
 
-        Write-Host ""
         Write-Host "Excluded Apps:" -ForegroundColor Green
         Write-Host $ExcludedApps -ForegroundColor Green
     }
@@ -274,7 +284,6 @@ foreach($policy in $Policies){
             $ExcludedApps += $app
         }
 
-        Write-Host ""
         Write-Host "Excluded Apps:" -ForegroundColor Yellow
         
         foreach($excludedApp in $ExcludedApps){
@@ -287,12 +296,13 @@ foreach($policy in $Policies){
 
         $ExcludedApps = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Excluded Apps:" -ForegroundColor Red
         Write-Host $ExcludedApps -ForegroundColor Red
     }
 
     # End if/else statement for excluded applications check.  Begin if/else statement for included directory roles check.
+
+    Write-Host ""
 
     if($policy.Conditions.Users.IncludeRoles.Count -GT "0"){
 
@@ -305,7 +315,6 @@ foreach($policy in $Policies){
             $Roles += $RoleDisplayName.DisplayName
         }
 
-        Write-Host ""
         Write-Host "Included Roles:" -ForegroundColor Yellow
 
         foreach($rolename in $Roles){
@@ -318,7 +327,6 @@ foreach($policy in $Policies){
 
         $IncludedRoles = "NONE"
 
-        Write-Host ""
         Write-Host "Included Roles:" -ForegroundColor Green
         Write-Host $IncludedRoles -ForegroundColor Green
     }
@@ -327,12 +335,13 @@ foreach($policy in $Policies){
 
         $IncludedRoles = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Included Roles:" -ForegroundColor Red
         Write-Host $IncludedRoles -ForegroundColor Red
     }
 
     # End if/else statement for included directory roles check.  Begin if/else statement for excluded directory roles check.
+
+    Write-Host ""
 
     if($policy.Conditions.Users.ExcludeRoles.Count -GT "0"){
 
@@ -345,7 +354,6 @@ foreach($policy in $Policies){
             $Roles += $RoleDisplayName.DisplayName
         }
 
-        Write-Host ""
         Write-Host "Excluded Roles:" -ForegroundColor Yellow
 
         foreach($rolename in $Roles){
@@ -358,7 +366,6 @@ foreach($policy in $Policies){
 
         $ExcludedRoles = "NONE"
 
-        Write-Host ""
         Write-Host "Excluded Roles:" -ForegroundColor Green
         Write-Host $ExcludedRoles -ForegroundColor Green
     }
@@ -367,18 +374,18 @@ foreach($policy in $Policies){
 
         $ExcludedRoles = "UNKNOWN"
 
-        Write-Host ""
         Write-Host "Excluded Roles:" -ForegroundColor Red
         Write-Host $ExcludedRoles -ForegroundColor Red
     }
 
-    # End if/else statement for included directory roles check.  Begin if/else statement for Block/Grant controls configuration.
+    # End if/else statement for excluded directory roles check.  Begin if/else statement for Block/Grant controls configuration.
 
+    Write-Host ""
+    
     if($policy.GrantControls._Operator -EQ "AND"){
 
         $GrantControls = "Require all of the selected controls."
 
-        Write-Host ""
         Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Green
 
         $RequiredControls = $policy.GrantControls.BuiltInControls
@@ -435,9 +442,24 @@ foreach($policy in $Policies){
     elseif($policy.GrantControls._Operator -EQ "OR"){
 
         $GrantControls = "Require one of the selected controls."
+        
+        if($policy.GrantControls.BuiltInControls -Contains "Block"){
+        
+            Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Green
+        }
 
-        Write-Host ""
-        Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Yellow
+        else{
+
+            if($policy.GrantControls.BuiltInControls.Count -EQ "1"){
+            
+                Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Green
+            }
+
+            elseif($policy.GrantControls.BuiltInControls.Count -GT "1"){
+
+                Write-Host "Grant controls configuration: $GrantControls" -ForegroundColor Yellow
+            }
+        }
 
         $RequiredControls = $policy.GrantControls.BuiltInControls
         $RequiredControlsWithDisplayName = @()
@@ -488,16 +510,138 @@ foreach($policy in $Policies){
         }
 
         Write-Host ""
-        Write-Host "Controls:" -ForegroundColor Yellow
+        
+        if($policy.GrantControls.BuiltInControls -Contains "Block"){
+        
+            Write-Host "Controls:" -ForegroundColor Green
+        }
+
+        elseif($policy.GrantControls.BuiltInControls.Count -EQ "1"){
+
+            Write-Host "Controls:" -ForegroundColor Green
+        }
+        
+        elseif($policy.GrantControls.BuiltInControls.Count -GT "1"){
+
+            Write-Host "Controls:" -ForegroundColor Yellow
+        }
+
+        else{
+
+            Write-Host "Controls:" -ForegroundColor Red
+        }
         
         foreach($requiredcontrolname in $RequiredControlsWithDisplayName){
 
-            Write-Host $requiredcontrolname -ForegroundColor Yellow
+            if($requiredcontrolname -EQ "Block Access."){
+                
+                Write-Host $requiredcontrolname -ForegroundColor Green
+            }
+
+            elseif($requiredcontrolname -EQ "UNKNOWN"){
+                
+                Write-Host $requiredcontrolname -ForegroundColor Red
+            }
+
+            elseif($policy.GrantControls.BuiltInControls.Count -EQ "1"){
+            
+                Write-Host $requiredcontrolname -ForegroundColor Green
+            }
+
+            else{
+
+                Write-Host $requiredcontrolname -ForegroundColor Yellow
+            }
         }
     }
 
-    # End if/else statement for Block/Grant controls configuration.
+    # End if/else statement for Block/Grant controls configuration.  Begin included user actions check.
 
+    Write-Host ""
+    
+    if($policy.Conditions.Applications.IncludeUserActions.Count -EQ "0"){
+
+        Write-Host "Included user actions:" -ForegroundColor Green
+        Write-Host "NONE" -ForegroundColor Green
+    }
+
+    elseif($policy.Conditions.Applications.IncludeUserActions -EQ "urn:user:registerdevice"){
+
+        Write-Host "Included user actions:" -ForegroundColor Green
+        Write-Host "Register or join devices" -ForegroundColor Green
+    }
+        
+    elseif($policy.Conditions.Applications.IncludeUserActions -EQ "urn:user:registersecurityinfo"){
+
+        Write-Host "Included user actions:" -ForegroundColor Green
+        Write-Host "Register security information" -ForegroundColor Green
+    }
+
+    else{
+
+        Write-Host "Included user actions:" -ForegroundColor Red
+        Write-Host "UNKNOWN" -ForegroundColor Red
+    }
+
+    # End included user actions check.  Begin included device platforms check.
+
+    Write-Host ""
+    
+    if($policy.Conditions.Platforms.IncludePlatforms -EQ "All"){
+
+        Write-Host "Included device platforms:" -ForegroundColor Green
+        Write-Host "All device platforms." -ForegroundColor Green
+    }
+
+    elseif(($policy.Conditions.Platforms.IncludePlatforms -NE "All") -and ($policy.Conditions.Platforms.IncludePlatforms.Count -GT "0")){
+
+        Write-Host "Included device platforms:" -ForegroundColor Yellow
+        
+        foreach($platform in $policy.Conditions.Platforms.IncludePlatforms){
+
+            Write-Host $platform -ForegroundColor Yellow
+        }
+    }
+
+    elseif($policy.Conditions.Platforms.IncludePlatforms.Count -EQ "0"){
+
+        Write-Host "Included device platforms:" -ForegroundColor Green
+        Write-Host "NONE" -ForegroundColor Green
+    }
+
+    else{
+
+        Write-Host "Included device platforms:" -ForegroundColor Red
+        Write-Host "UNKNOWN" -ForegroundColor Red
+    }
+
+    # End included device platforms check.  Begin excluded device platforms check.
+
+    Write-Host ""
+    
+    if($policy.Conditions.Platforms.ExcludePlatforms.Count -EQ "0"){
+        
+        Write-Host "Excluded device platforms:" -ForegroundColor Green
+        Write-Host "NONE" -ForegroundColor Green
+    }
+
+    elseif($policy.Conditions.Platforms.ExcludePlatforms.Count -GT "0"){
+
+        Write-Host "Excluded device platforms:" -ForegroundColor Yellow
+        
+        foreach($platform in $policy.Conditions.Platforms.ExcludePlatforms){
+
+            Write-Host $platform -ForegroundColor Yellow
+        }
+    }
+
+    else{
+
+        Write-Host "Excluded device platforms:" -ForegroundColor Red
+        Write-Host "UNKNOWN" -ForegroundColor Red
+    }
+
+    # End excluded device platforms check.  Begin location configuration check.
 
     # Block basic authentication policy check.
 
