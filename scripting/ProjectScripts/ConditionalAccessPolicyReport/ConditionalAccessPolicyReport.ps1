@@ -641,7 +641,84 @@ foreach($policy in $Policies){
         Write-Host "UNKNOWN" -ForegroundColor Red
     }
 
-    # End excluded device platforms check.  Begin location configuration check.
+    # End excluded device platforms check.  Begin included location configuration check.
+
+    Write-Host ""
+    
+    if($policy.Conditions.Locations.IncludeLocations -EQ "All"){
+
+        Write-Host "Included locations:" -ForegroundColor Green
+        Write-Host "All locations" -ForegroundColor Green
+    }
+
+    elseif($policy.Conditions.Locations.IncludeLocations -EQ "AllTrusted"){
+
+        Write-Host "Included locations:" -ForegroundColor Green
+        Write-Host "All trusted locations" -ForegroundColor Green
+    }
+
+    elseif(($policy.Conditions.Locations.IncludeLocations -NE "All") -and ($policy.Conditions.Locations.IncludeLocations -NE "AllTrusted") -and ($policy.Conditions.Locations.IncludeLocations.Count -GT "0")){
+
+        Write-Host "Included locations:" -ForegroundColor Yellow
+        
+        $IncludedLocations = $policy.Conditions.Locations.IncludeLocations
+        
+        foreach($location in $IncludedLocations){
+
+            $LocationInfo = Get-AzureADMSNamedLocationPolicy -PolicyId $location
+
+            $NamedLocationDisplayName = $LocationInfo.DisplayName
+
+            if($LocationInfo.IsTrusted -Match "False"){
+
+                $LocationTrusted = "NO"
+            }
+
+            elseif($LocationInfo.IsTrusted -Match "True"){
+
+                $LocationTrusted = "YES"
+            }
+
+            else{
+
+                if($LocationInfo.OdataType -EQ "#microsoft.graph.countryNamedLocation"){
+                
+                    $LocationTrusted = "Country based named locations cannot be flagged as a trusted location."
+                }
+
+                else{
+
+                    $LocationTrusted = "UNKNOWN"
+                }
+            }
+            
+            Write-Host ""
+            Write-Host "Location name: '$NamedLocationDisplayName'"  "Trusted:" $LocationTrusted -ForegroundColor Yellow
+        
+            if($LocationInfo.OdataType -EQ "#microsoft.graph.countryNamedLocation"){
+                
+                Write-Host ""
+                Write-Host "Included countries for '$NamedLocationDisplayName':" -ForegroundColor Yellow
+                
+                foreach($country in $LocationInfo.CountriesAndRegions){
+
+                    Write-Host $country -ForegroundColor Yellow
+                }
+            }
+
+            elseif($LocationInfo.OdataType -EQ "#microsoft.graph.ipNamedLocation"){
+
+                Write-Host ""
+                Write-Host "Included IP addresses for '$NamedLocationDisplayName':" -ForegroundColor Yellow
+                
+                foreach($ipaddress in $LocationInfo.IpRanges){
+
+                    Write-Host $ipaddress.CidrAddress -ForegroundColor Yellow
+                }
+            }
+        
+        }
+    }
 
     # Block basic authentication policy check.
 
