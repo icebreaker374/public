@@ -68,11 +68,11 @@ $Mailboxes = Import-CSV $AllMailboxesCSVPath
 
 # This script excludes instances where the mailbox owner can send as themselves, because obviously we know that already.
 
-foreach($mailbox in $Mailboxes){Get-MailboxPermission $mailbox.PrimarySmtpAddress | Where {$_.user.tostring() -ne "NT AUTHORITY\SELF"} | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; E={$mailbox.PrimarySmtpAddress}}, User, AccessRights | Export-CSV C:\Temp\SharedMailboxDelegatedAccessReport\AllMailboxesFullAccessReport.csv -NoTypeInformation -Append}
+foreach($mailbox in $Mailboxes){Get-MailboxPermission $mailbox.PrimarySmtpAddress | Where {$_.user.tostring() -ne "NT AUTHORITY\SELF"} | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; E={$mailbox.PrimarySmtpAddress}}, User, AccessRights | Export-CSV .\AllMailboxesFullAccessReport.csv -NoTypeInformation -Append}
 
-foreach($mailbox in $Mailboxes){Get-RecipientPermission $mailbox.PrimarySmtpAddress | Where Trustee -ne "NT AUTHORITY\SELF" | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; E={$mailbox.PrimarySmtpAddress}}, Trustee, AccessRights | Export-CSV C:\Temp\SharedMailboxDelegatedAccessReport\AllMailboxesSendAsReport.csv -NoTypeInformation -Append}
+foreach($mailbox in $Mailboxes){Get-RecipientPermission $mailbox.PrimarySmtpAddress | Where Trustee -ne "NT AUTHORITY\SELF" | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; E={$mailbox.PrimarySmtpAddress}}, Trustee, AccessRights | Export-CSV .\AllMailboxesSendAsReport.csv -NoTypeInformation -Append}
 
-foreach($mailbox in $Mailboxes){Get-Mailbox $mailbox.PrimarySmtpAddress | Where {$_.GrantSendOnBehalfTo -ne $null} | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; Expression={$mailbox.PrimarySmtpAddress}}, @{N='SendOnBehalfOf';E={$_.GrantSendOnBehalfTo -join ", "}} | Export-CSV C:\Temp\SharedMailboxDelegatedAccessReport\AllMailboxesSendOnBehalfReport.csv -NoTypeInformation -Append}
+foreach($mailbox in $Mailboxes){Get-Mailbox $mailbox.PrimarySmtpAddress | Where {$_.GrantSendOnBehalfTo -ne $null} | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; Expression={$mailbox.PrimarySmtpAddress}}, @{N='SendOnBehalfOf';E={$_.GrantSendOnBehalfTo -join ", "}} | Export-CSV .\AllMailboxesSendOnBehalfReport.csv -NoTypeInformation -Append}
 
 Remove-Item -Path $AllMailboxesCSVPath # This command deletes the Mailboxes.csv file the script creates to reference the mailboxes and pull permission reports.
 
