@@ -1,29 +1,31 @@
-﻿Write-Host "C:\Temp\UnblockedUsersReport already exists."
+﻿Write-Host "Checking if C:\Temp\UnblockedUsersReport already exists..."
 
-Start-Sleep -Seconds 1.5
+Start-Sleep -Milliseconds 1500
 
-﻿if(Test-Path "C:\Temp\UnblockedUsersReport"){
-
-    Write-Host "C:\Temp\UnblockedUsersReport already exists."
+if(Test-Path "C:\Temp\UnblockedUsersReport"){
+    
+    Write-Host "
+C:\Temp\UnblockedUsersReport already exists."
 }
 
 else{
-
-cd C:\
-md Temp\UnblockedUsersReport > $null
-
-Write-Host "A directory called 'Temp\UnblockedUsersReport' was created at 'C:\'"
+    
+    cd C:\
+    md Temp\UnblockedUsersReport > $null
+    
+    Write-Host "
+A directory called 'Temp\UnblockedUsersReport' was created at 'C:\'"
 }
 
 if(Get-InstalledModule MSOnline){ # This curly bracket opens the if/else statement that checks if the MSOnline module is installed.
 
     Write-Host "
-    Confirmed the MSOnline PowerShell module is installed."
+Confirmed the MSOnline PowerShell module is installed."
 
     if(Get-Module MSOnline){ # This curly bracket opens the if/else statement that checks if the MSOnline module is loaded.
 
         Write-Host "
-        Confirmed the MSOnline PowerShell Module is loaded."
+Confirmed the MSOnline PowerShell Module is loaded."
     }
 
     else{
@@ -31,7 +33,7 @@ if(Get-InstalledModule MSOnline){ # This curly bracket opens the if/else stateme
         Import-Module MSOnline
 
         Write-Host "
-        The MSOnline PowerShell Module was successfully loaded."
+The MSOnline PowerShell Module was successfully loaded."
     } # This curly bracket closes the if/else statement that checks if the MSOnline module is loaded.
 
 } # This curly bracket closes the if/else statement that checks if the MSOnline module is installed.
@@ -42,10 +44,11 @@ else{
     Import-Module MSOnline
 
     Write-Host "
-    The MSOnline PowerShell module was successfully installed and loaded."
+The MSOnline PowerShell module was successfully installed and loaded."
 } # This is where the checks for C:\Temp, installed modules, and imported modules end.
 
-Write-Host "You will be prompted to login with User/Global Admin credentials to connet to MSOnline in 5 seconds..."
+Write-Host "
+You will be prompted to login with User/Global Admin credentials to connet to MSOnline in 5 seconds..."
 
 Connect-MsolService
 
