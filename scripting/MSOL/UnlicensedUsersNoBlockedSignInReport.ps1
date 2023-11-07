@@ -1,14 +1,18 @@
-﻿﻿if(Test-Path "C:\Temp"){
+﻿Write-Host "C:\Temp\UnblockedUsersReport already exists."
 
-Write-Host "C:\Temp already exists."
+Start-Sleep -Seconds 1.5
+
+﻿if(Test-Path "C:\Temp\UnblockedUsersReport"){
+
+    Write-Host "C:\Temp\UnblockedUsersReport already exists."
 }
 
 else{
 
 cd C:\
-md Temp > $null
+md Temp\UnblockedUsersReport > $null
 
-Write-Host "A directory called 'Temp' was created at 'C:\'"
+Write-Host "A directory called 'Temp\UnblockedUsersReport' was created at 'C:\'"
 }
 
 if(Get-InstalledModule MSOnline){ # This curly bracket opens the if/else statement that checks if the MSOnline module is installed.
