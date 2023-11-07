@@ -67,7 +67,7 @@ foreach($role in $DirectoryRoles){ # This curly bracket opens the foreach loop t
 
     Write-Host "Checking assignments for the following role:" ($role.DisplayName).ToString()
     
-    Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{N="Azure AD Role"; E={$role.DisplayName}}, @{N="DisplayName"; E={$_.additionalProperties['displayName']}}, @{N="UserPrincipalName"; E={$_.additionalProperties['userPrincipalName']}} | Export-CSV C:\Temp\AzureADAdminRolesReportMSGraph\AzureADAdminRolesReportMSGraph.csv -NoTypeInformation -Append
+    Get-MgDirectoryRoleMember -DirectoryRoleId $role.Id | Select @{N="Azure AD Role"; E={$role.DisplayName}}, @{N="DisplayName"; E={$_.additionalProperties['displayName']}}, @{N="UserPrincipalName"; E={$_.additionalProperties['userPrincipalName']}} | Export-CSV .\AzureADAdminRolesReportMSGraph.csv -NoTypeInformation -Append
 } # This curly bracket closes the foreach loop that gets the member list of each AAD admin role and outputs it to CSV.
 
 # References
