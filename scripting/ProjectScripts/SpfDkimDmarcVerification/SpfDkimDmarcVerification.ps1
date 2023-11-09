@@ -17,7 +17,7 @@ else{
 
         # Begin SPF record check for all domains in tenant.
 
-        $SPFConfigurationCheck = Resolve-DnsName -Name $DomainDisplayName -Type TXT -Server 1.1.1.1 -ErrorAction SilentlyContinue | Select @{N="SpfRecords";E={$_.Strings}} | Out-String
+        $SPFConfigurationCheck = Resolve-DnsName -Name $DomainDisplayName -Type TXT -Server 1.1.1.1 -ErrorAction SilentlyContinue | Select -ExpandProperty Strings
 
         if($Error.Exception -Match "$DomainDisplayName : DNS name does not exist"){
 
@@ -33,8 +33,16 @@ else{
 
         elseif($SPFConfigurationCheck -NE $null){
 
-            Write-Host "Domain '$DomainDisplayName' has the following SPF records setup:"
-            Write-Host $SPFConfigurationCheck
+            Write-Host "'$DomainDisplayName' has the following SPF records setup:"
+            Write-Host ""
+            Write-Host "SpfRecords"
+            Write-Host "----------"
+        
+            foreach($record in $SPFConfigurationCheck){
+
+                Write-Host $record
+                Write-Host ""
+            }
         }
 
         else{
@@ -48,7 +56,9 @@ else{
 
         if($Error.Exception -Match "Ex43C0AC"){
 
-            Write-Host "DKIM configuration/DKIM keys not created for: $DomainDisplayName"
+            Write-Host "
+DKIM configuration/DKIM keys not created for: $DomainDisplayName"
+            Write-Host ""
 
             $Error.Clear()
         }
@@ -57,17 +67,23 @@ else{
 
             if($DKIMConfigurationCheck.Enabled -EQ $True){
 
-                Write-Host "Domain: $DomainDisplayName, DKIM Status: ENABLED"
+                Write-Host "
+Domain: $DomainDisplayName, DKIM Status: ENABLED"
+                Write-Host ""
             }
 
             elseif($DKIMConfigurationCheck.Enabled -EQ $False){
 
-                Write-Host "Domain: $DomainDisplayName, DKIM Status: NOT ENABLED"
+                Write-Host "
+Domain: $DomainDisplayName, DKIM Status: NOT ENABLED"
+                Write-Host ""
             }
 
             else{
 
-                Write-Host "Domain: $DomainDisplayName, DKIM Status: UNKNOWN"
+                Write-Host "
+Domain: $DomainDisplayName, DKIM Status: UNKNOWN"
+                Write-Host ""
             }
         }
 

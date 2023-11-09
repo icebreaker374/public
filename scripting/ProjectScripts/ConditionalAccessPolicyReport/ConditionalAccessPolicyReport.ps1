@@ -430,7 +430,6 @@ foreach($policy in $Policies){
             }
         }
 
-        Write-Host ""
         Write-Host "Controls:" -ForegroundColor Green
         
         foreach($requiredcontrolname in $RequiredControlsWithDisplayName){
@@ -501,7 +500,7 @@ foreach($policy in $Policies){
                 $controlDisplayName = "Block Access."
                 $RequiredControlsWithDisplayName += $controlDisplayName
             }
-
+            
             else{
                 
                 $controlDisplayName = "UNKNOWN"
@@ -529,6 +528,9 @@ foreach($policy in $Policies){
         else{
 
             Write-Host "Controls:" -ForegroundColor Red
+            Write-Host "UNKNOWN" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "NOTE: The policy me be configured to use 'Require authentication strength'" -ForegroundColor Yellow
         }
         
         foreach($requiredcontrolname in $RequiredControlsWithDisplayName){
@@ -785,9 +787,10 @@ foreach($policy in $Policies){
                 }
             }
         
+            Write-Host ""
+            
             if($LocationInfo.OdataType -EQ "#microsoft.graph.countryNamedLocation"){
                 
-                Write-Host ""
                 Write-Host "Included countries for '$NamedLocationDisplayName':" -ForegroundColor Yellow
                 
                 foreach($country in $LocationInfo.CountriesAndRegions){
@@ -798,7 +801,6 @@ foreach($policy in $Policies){
 
             elseif($LocationInfo.OdataType -EQ "#microsoft.graph.ipNamedLocation"){
 
-                Write-Host ""
                 Write-Host "Included IP addresses for '$NamedLocationDisplayName':" -ForegroundColor Yellow
                 
                 foreach($ipaddress in $LocationInfo.IpRanges){
@@ -817,23 +819,86 @@ foreach($policy in $Policies){
         Write-Host "NOT CONFIGURED" -ForegroundColor Yellow
     }
 
-    # Block basic authentication policy check.
+    # End excluded location configuration check. Begin session controls configuration check.
 
-    if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -Contains "Block")){
+    Write-Host ""    
+    Write-Host "Session control configurations:" -ForegroundColor Yellow
+    Write-Host ""
+    
+    if($policy.SessionControls.ApplicationEnforcedRestrictions.IsEnabled -NotMatch "True"){
 
-        Write-Host ""
-        Write-Host "CA Policy '$PolicyName' DOES block basic authentication." -ForegroundColor Green
+        Write-Host "Use app enforced restrictions: NOT CONFIGURED" -ForegroundColor Yellow
     }
 
-    elseif(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -NotContains "Block")){
+    elseif($policy.SessionControls.ApplicationEnforcedRestrictions -Match "True"){
 
-        Write-Host ""
-        Write-Host "CA Policy '$PolicyName' ALLOWS basic authentication." -ForegroundColor Red
+        Write-Host "Use app enforced restrictions: ENABLED" -ForegroundColor Green
+    }
+
+    else{
+
+        Write-Host "Use app enforced restrictions: UNKNOWN" -ForegroundColor Red
+    }
+
+    if($policy.SessionControls.CloudAppSecurity.CloudAppSecurityType -Match "McasConfigured"){
+
+        Write-Host "Use Conditional Access App Control: CONFIGURED 'Use custom policy...'" -ForegroundColor Yellow
+    }
+
+    elseif($policy.SessionControls.CloudAppSecurity.CloudAppSecurityType -Match "MonitorOnly"){
+
+        Write-Host "Use Conditional Access App Control: CONFIGURED 'Monitor Only'" -ForegroundColor Yellow
+    }
+
+    elseif($policy.SessionControls.CloudAppSecurity.CloudAppSecurityType -EQ "BlockDownloads"){
+
+        Write-Host "Use Conditional Access App Control: CONFIGURED 'Block Downloads'" -ForegroundColor Yellow
+    }
+
+    else{
+
+        Write-Host "Use Conditional Access App Control: NOT CONFIGURED" -ForegroundColor Yellow
+    }
+
+    if($policy.SessionControls.SignInFrequency.Type -Match "Hours"){
+
+        $Hours = $policy.SessionControls.SignInFrequency.Value
+    
+        Write-Host "Sign-in frequency: Configured for periodic reauthentication every $Hours hours." -ForegroundColor Yellow
+    }
+
+    elseif($policy.SessionControls.SignInFrequency.Type -Match "Days"){
+
+        $Days = $policy.SessionControls.SignInFrequency.Value
+    
+        Write-Host "Sign-in frequency: Configured for periodic reauthentication every $Days days." -ForegroundColor Yellow
+
     }
 
     else{
 
         Write-Host ""
+        Write-Host "Sign in frequency: NOT CONFIGURED" -ForegroundColor Yellow
+        Write-Host "NOTE: The sign-in frequency control 'every time' cannot be used with M365 applications." -ForegroundColor Yellow
+        Write-Host ""
+    }
+
+    # Block basic authentication policy check.
+
+    Write-Host ""
+
+    if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -Contains "Block")){
+
+        Write-Host "CA Policy '$PolicyName' DOES block basic authentication." -ForegroundColor Green
+    }
+
+    elseif(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -NotContains "Block")){
+
+        Write-Host "CA Policy '$PolicyName' ALLOWS basic authentication." -ForegroundColor Red
+    }
+
+    else{
+
         Write-Host "CA Policy '$PolicyName' DOES NOT block basic authentication." -ForegroundColor Yellow
     }
 
@@ -841,3 +906,18 @@ foreach($policy in $Policies){
     Write-Host ""
     $PolicyCount++
 }
+
+# Azure AD PowerShell does not yet support retrieving information on the 'Require Authentication Strength' grant control.
+
+# There is a property of the policy that can be retrieved from AzureAD PowerShell called Conditions.Applications.IncludeProtectionLevels, I don't know what this property pertains to in terms of a CA policy.  Same said for GrantControls.TermsOfUse.
+
+<# Note that if you exclude Linux as a device platform from a CA policy the script might generate this error:
+
+Get-AzureADMSConditionalAccessPolicy : Error converting value "linux" to type 'Microsoft.Open.MSGraph.Model.ConditionalAccessDevicePlatforms'. Path 
+'value[5].conditions.platforms.excludePlatforms[3]', line 1, position 7440.
+At C:\GitHub\public\scripting\ProjectScripts\ConditionalAccessPolicyReport\ConditionalAccessPolicyReport.ps1:1 char:13
++ $Policies = Get-AzureADMSConditionalAccessPolicy
++             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-AzureADMSConditionalAccessPolicy], ApiException
+    + FullyQualifiedErrorId : Microsoft.Open.MSGraphV10.Client.ApiException,Microsoft.Open.MSGraphV10.PowerShell.GetAzureADMSConditionalAccessPolicy
+#>

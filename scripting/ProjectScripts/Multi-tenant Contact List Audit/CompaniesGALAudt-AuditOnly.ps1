@@ -171,7 +171,7 @@ No" $currentClient "users are missing as contacts from the global address list f
             Write-Host "
 Disconnecting from Exchange Online for the following tenant:" ($client.OrgDisplayName).ToString()
 
-            Disconnect-ExchangeOnline
+            Disconnect-ExchangeOnline -Confirm:$false
 
             Start-Sleep -Seconds 2
 
