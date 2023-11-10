@@ -1,4 +1,55 @@
-﻿$Policies = Get-AzureADMSConditionalAccessPolicy
+﻿if(Test-Path "C:\Temp\ConditionalAccessPolicyReport"){
+
+    Write-Host "C:\Temp\ConditionalAccessPolicyReport already exists."
+}
+
+else{
+    
+    cd C:\
+    md Temp\ConditionalAccessPolicyReport > $null
+
+    Write-Host "A directory called 'Temp\ConditionalAccessPolicyReport' was created at 'C:\'"
+}
+
+cd C:\Temp\ConditionalAccessPolicyReport
+
+if(Get-InstalledModule AzureAD){
+
+    Write-Host "
+Confirmed the AzureAD PowerShell module is installed."
+
+    if(Get-Module AzureAD){
+
+        Write-Host "
+Confirmed the AzureAD PowerShell Module is loaded."
+    }
+
+    else{
+    
+        Import-Module AzureAD
+
+        Write-Host "
+The AzureAD PowerShell Module was successfully loaded."
+    }
+}
+
+else{
+
+    Install-Module ExchangeOnlineManagement -Scope CurrentUser
+    Import-Module ExchangeOnlineManagement
+
+    Write-Host "
+The AzureAD PowerShell module was successfully installed and loaded."
+}
+
+Write-Host ""
+Write-Host "In 3 seconds you'll be prompted to enter Global Administrator credentials to connect to Azure AD..."
+
+Start-Sleep -Seconds 3
+
+Connect-AzureAD | Out-Null
+
+$Policies = Get-AzureADMSConditionalAccessPolicy
 
 $PolicyCount = 1
 
@@ -27,7 +78,7 @@ foreach($policy in $Policies){
     elseif($policy.State -EQ "disabled"){
 
         $PolicyStatus = "CA Access Policy Status: DISABLED"
-        Write-Host $PolicyStatus -ForegroundColor Red
+        Write-Host $PolicyStatus -ForegroundColor Yellow
     }
 
     elseif($policy.State -EQ "enabledForReportingButNotEnforced"){
@@ -825,6 +876,11 @@ foreach($policy in $Policies){
     Write-Host "Session control configurations:" -ForegroundColor Yellow
     Write-Host ""
     
+    # Begin app enforced restrictions check.
+    
+    Write-Host "NOTE: App enforced restrictions only works with Office365, Exchange Online, and SharePoint Online." -ForegroundColor Yellow
+    Write-Host ""
+    
     if($policy.SessionControls.ApplicationEnforcedRestrictions.IsEnabled -NotMatch "True"){
 
         Write-Host "Use app enforced restrictions: NOT CONFIGURED" -ForegroundColor Yellow
@@ -840,6 +896,8 @@ foreach($policy in $Policies){
         Write-Host "Use app enforced restrictions: UNKNOWN" -ForegroundColor Red
     }
 
+    # End app enforced restrictions check.  Begin Conditional Access app control check.
+    
     if($policy.SessionControls.CloudAppSecurity.CloudAppSecurityType -Match "McasConfigured"){
 
         Write-Host "Use Conditional Access App Control: CONFIGURED 'Use custom policy...'" -ForegroundColor Yellow
@@ -860,6 +918,12 @@ foreach($policy in $Policies){
         Write-Host "Use Conditional Access App Control: NOT CONFIGURED" -ForegroundColor Yellow
     }
 
+    # End Conditional Access app control check.  Begin sign-in frequency check.
+
+    Write-Host ""
+    Write-Host "NOTE: The sign-in frequency control 'every time' cannot be used with M365 applications." -ForegroundColor Yellow
+    Write-Host ""
+    
     if($policy.SessionControls.SignInFrequency.Type -Match "Hours"){
 
         $Hours = $policy.SessionControls.SignInFrequency.Value
@@ -877,11 +941,29 @@ foreach($policy in $Policies){
 
     else{
 
-        Write-Host ""
         Write-Host "Sign in frequency: NOT CONFIGURED" -ForegroundColor Yellow
-        Write-Host "NOTE: The sign-in frequency control 'every time' cannot be used with M365 applications." -ForegroundColor Yellow
-        Write-Host ""
     }
+
+    # End sign-in frequency check.  Begin persistent browser check.
+
+    Write-Host ""
+    
+    if($policy.SessionControls.PersistentBrowser.Mode -Match "Always"){
+
+        Write-Host "Persistent browser session: Always persistent" -ForegroundColor Yellow
+    }
+
+    elseif($policy.SessionControls.PersistentBrowser.Mode -Match "Never"){
+
+        Write-Host "Persistent browser session: Never persistent" -ForegroundColor Yellow
+    }
+
+    else{
+
+        Write-Host "Persistent browser session: NOT CONFIGURED" -ForegroundColor Yellow
+    }
+
+    # End persistent browser check.
 
     # Block basic authentication policy check.
 
@@ -889,23 +971,76 @@ foreach($policy in $Policies){
 
     if(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -Contains "Block")){
 
-        Write-Host "CA Policy '$PolicyName' DOES block basic authentication." -ForegroundColor Green
+        Write-Host "CA policy '$PolicyName' DOES block basic authentication." -ForegroundColor Green
     }
 
     elseif(($policy.Conditions.ClientAppTypes -Contains "ExchangeActiveSync") -and ($policy.Conditions.ClientAppTypes -Contains "Other") -and ($policy.GrantControls.BuiltInControls -NotContains "Block")){
 
-        Write-Host "CA Policy '$PolicyName' ALLOWS basic authentication." -ForegroundColor Red
+        Write-Host "CA policy '$PolicyName' ALLOWS basic authentication." -ForegroundColor Red
     }
 
     else{
 
-        Write-Host "CA Policy '$PolicyName' DOES NOT block basic authentication." -ForegroundColor Yellow
+        Write-Host "CA policy '$PolicyName' DOES NOT block basic authentication." -ForegroundColor Yellow
+    }
+
+    # End basic authentication policy check. Begin require MFA for administrators (and block persistent browser session) check.
+
+    Write-Host ""
+
+    if(($policy.Conditions.Users.IncludeRoles.Count -GT "0") -and ($policy.SessionControls.PersistentBrowser -Match "Never")){
+
+        Write-Host "CA policy '$PolicyName' requires MFA for administrators and blocks persistent browser sessions." -ForegroundColor Yellow
+
+        $Roles = @()
+        
+        foreach($role in $policy.Conditions.Users.IncludeRoles){
+
+            $RoleDisplayName = Get-AzureADMSRoleDefinition -Id $role | Select DisplayName
+
+            $Roles += $RoleDisplayName.DisplayName
+        }
+
+        Write-Host "Included Roles:" -ForegroundColor Yellow
+
+        foreach($rolename in $Roles){
+            
+            Write-Host $rolename -ForegroundColor Yellow
+        }
+    }
+
+    elseif(($policy.Conditions.Users.IncludeRoles.Count -GT "0") -and ($policy.SessionControls.PersistentBrowser -Match "Always")){
+
+        Write-Host "CA policy '$PolicyName' requires MFA for administrators and allows persistent browser sessions." -ForegroundColor Red
+
+        $Roles = @()
+        
+        foreach($role in $policy.Conditions.Users.IncludeRoles){
+
+            $RoleDisplayName = Get-AzureADMSRoleDefinition -Id $role | Select DisplayName
+
+            $Roles += $RoleDisplayName.DisplayName
+        }
+
+        Write-Host "Included Roles:" -ForegroundColor Red
+
+        foreach($rolename in $Roles){
+            
+            Write-Host $rolename -ForegroundColor Red
+        }
+    }
+
+    else{
+
+        Write-Host "CA policy '$PolicyName' does not require MFA for administrators and block persistent browser sessions." -ForegroundColor Yellow
     }
 
     Write-Host "-----------------------------------------------------------------------------------------------------" -ForegroundColor Cyan
     Write-Host ""
     $PolicyCount++
 }
+
+Read-Host "Press enter to exit"
 
 # Azure AD PowerShell does not yet support retrieving information on the 'Require Authentication Strength' grant control.
 
