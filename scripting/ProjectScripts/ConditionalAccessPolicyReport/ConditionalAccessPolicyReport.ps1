@@ -35,8 +35,8 @@ The AzureAD PowerShell Module was successfully loaded."
 
 else{
 
-    Install-Module ExchangeOnlineManagement -Scope CurrentUser
-    Import-Module ExchangeOnlineManagement
+    Install-Module AzureAD -Scope CurrentUser
+    Import-Module AzureAD
 
     Write-Host "
 The AzureAD PowerShell module was successfully installed and loaded."
@@ -48,6 +48,7 @@ Write-Host "In 3 seconds you'll be prompted to enter Global Administrator creden
 Start-Sleep -Seconds 3
 
 Connect-AzureAD | Out-Null
+
 
 $Policies = Get-AzureADMSConditionalAccessPolicy
 
