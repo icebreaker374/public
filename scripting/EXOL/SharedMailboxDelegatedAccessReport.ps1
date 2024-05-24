@@ -56,13 +56,9 @@ Start-Sleep -Seconds 3
 
 Connect-ExchangeOnline -ShowBanner:$false
 
-# The following command pulls a list of every mailbox in the Exchange environment and dumps a list with each mailboxes PrimarySMTPAddress into a CSV.
+# The following command pulls a list of every mailbox in the Exchange environment.
 
-Get-Mailbox -ResultSize Unlimited | Select PrimarySMTPAddress, DisplayName | Sort PrimarySMTPAddress | Export-CSV $AllMailboxesCSVPath -NoTypeInformation
-
-# Imports the CSV with the list of primary SMTP addresses for all mailboxes in the Exchange environment.
-
-$Mailboxes = Import-CSV $AllMailboxesCSVPath
+$Mailboxes = Get-Mailbox -ResultSize Unlimited | Select PrimarySMTPAddress, DisplayName | Sort PrimarySMTPAddress
 
 # Each of the following foreach loops will check against the CSV containing the PrimarySMTPAddress of every shared mailbox in the Exchange environment and pulls the Send As, Send on Behalf of, and Read and Manage permissions for each one, then appends every entry to their respective CSV reports.
 
@@ -73,8 +69,6 @@ foreach($mailbox in $Mailboxes){Get-MailboxPermission $mailbox.PrimarySmtpAddres
 foreach($mailbox in $Mailboxes){Get-RecipientPermission $mailbox.PrimarySmtpAddress | Where Trustee -ne "NT AUTHORITY\SELF" | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; E={$mailbox.PrimarySmtpAddress}}, @{N="User"; E={$_.Trustee}}, AccessRights | Export-CSV .\AllMailboxesSendAsReport.csv -NoTypeInformation -Append}
 
 foreach($mailbox in $Mailboxes){Get-Mailbox $mailbox.PrimarySmtpAddress | Where {$_.GrantSendOnBehalfTo -ne $null} | Select @{N="MailboxOwnerDisplayName"; E={$mailbox.DisplayName}}, @{N="MailboxOwnerAddress"; Expression={$mailbox.PrimarySmtpAddress}}, @{N='SendOnBehalfOf';E={$_.GrantSendOnBehalfTo -join ", "}} | Export-CSV .\AllMailboxesSendOnBehalfReport.csv -NoTypeInformation -Append}
-
-Remove-Item -Path $AllMailboxesCSVPath # This command deletes the Mailboxes.csv file the script creates to reference the mailboxes and pull permission reports.
 
 # References:
 
